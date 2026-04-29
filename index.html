@@ -1,0 +1,1123 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kampaoh · Influencer Hub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --black:#000;--yellow:#FFD100;--wgray:#D7D2CB;
+  --bg:#F5F4F1;--card:#fff;--border:#E8E5E0;
+  --text:#111;--muted:#6B7280;--faint:#9CA3AF;
+  --green:#16A34A;--red:#DC2626;--orange:#D97706;--blue:#2563EB;
+  --r:6px;--rl:14px;--font:'Inter',-apple-system,sans-serif;
+  --sh:0 1px 3px rgba(0,0,0,.06),0 1px 2px rgba(0,0,0,.04);
+  --shl:0 20px 60px rgba(0,0,0,.18);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:14px;line-height:1.5;min-height:100vh;overflow-x:hidden}
+
+/* HEADER */
+.hd{background:var(--black);color:#fff;padding:0 28px;height:60px;display:flex;align-items:center;gap:20px;position:sticky;top:0;z-index:100}
+.logo{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.logo-t{font-size:20px;line-height:1}
+.logo-b{font-size:14px;font-weight:700;letter-spacing:.1em}
+.logo-s{font-size:9px;letter-spacing:.15em;color:var(--wgray);text-transform:uppercase;margin-top:1px}
+.hd-sep{width:1px;height:26px;background:rgba(255,255,255,.12);flex-shrink:0}
+.hd-pills{display:flex;gap:6px;flex:1;min-width:0;overflow:hidden}
+.pill{display:flex;align-items:center;gap:5px;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:500;white-space:nowrap;flex-shrink:0}
+.pill-y{background:rgba(255,209,0,.15);color:var(--yellow);border:1px solid rgba(255,209,0,.3)}
+.pill-w{background:rgba(255,255,255,.07);color:rgba(255,255,255,.6);border:1px solid rgba(255,255,255,.1)}
+.pill-g{background:rgba(22,163,74,.15);color:#4ade80;border:1px solid rgba(22,163,74,.3)}
+.pill .dot{width:5px;height:5px;border-radius:50%;background:currentColor;flex-shrink:0}
+.hd-right{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.conn-badge{display:flex;align-items:center;gap:5px;font-size:11px;color:rgba(255,255,255,.5)}
+.conn-dot{width:6px;height:6px;border-radius:50%;background:#4ade80;flex-shrink:0}
+.conn-dot.loading{background:var(--yellow);animation:pulse 1s infinite}
+.conn-dot.error{background:var(--red)}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.btn-refresh{background:rgba(255,255,255,.08);color:rgba(255,255,255,.7);border:1px solid rgba(255,255,255,.12);padding:5px 12px;border-radius:var(--r);font-size:11px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px;transition:.15s;font-family:var(--font)}
+.btn-refresh:hover{background:rgba(255,255,255,.14)}
+.btn-refresh svg{transition:transform .5s}
+.btn-refresh.spinning svg{animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* TABS */
+.tab-bar{background:var(--card);border-bottom:1px solid var(--border);padding:0 28px;display:flex;align-items:center;gap:0}
+.tab{padding:13px 18px;font-size:13px;font-weight:500;color:var(--muted);background:none;border:none;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:.15s;font-family:var(--font);display:flex;align-items:center;gap:7px}
+.tab:hover{color:var(--text)}
+.tab.active{color:var(--text);font-weight:600;border-bottom-color:var(--black)}
+.tab-badge{background:var(--yellow);color:var(--black);font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px;min-width:20px;text-align:center}
+.tab.active .tab-badge{background:var(--black);color:#fff}
+
+/* FILTER BAR */
+.filters{background:var(--card);border-bottom:1px solid var(--border);padding:10px 28px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.fi{display:flex;align-items:center;gap:7px;padding:7px 11px;border:1px solid var(--border);border-radius:var(--r);background:var(--bg);transition:.15s}
+.fi:focus-within{border-color:var(--black);background:#fff}
+.fi svg{color:var(--faint);flex-shrink:0}
+.fi input,.fi select{border:none;background:transparent;font-family:var(--font);font-size:12px;color:var(--text);outline:none;min-width:0}
+.fi.wide{flex:1;min-width:160px}
+.f-count{margin-left:auto;font-size:11px;color:var(--faint);font-weight:500;white-space:nowrap}
+
+/* VIEWS */
+.view{display:none}.view.active{display:block}
+
+/* MAIN */
+.main{padding:20px 28px 60px;max-width:1440px;margin:0 auto}
+
+/* TABLE CARD */
+.tcard{background:var(--card);border-radius:var(--rl);box-shadow:var(--sh);border:1px solid var(--border);overflow:hidden}
+table{width:100%;border-collapse:collapse}
+th{padding:9px 14px;text-align:left;font-size:10px;font-weight:700;color:var(--faint);letter-spacing:.08em;text-transform:uppercase;border-bottom:1px solid var(--border);background:#FAFAF8;white-space:nowrap}
+th:first-child{padding-left:20px}th:last-child{padding-right:20px;text-align:right}
+td{padding:11px 14px;border-bottom:1px solid var(--border);vertical-align:middle}
+td:first-child{padding-left:20px}td:last-child{padding-right:20px}
+tr:last-child td{border-bottom:none}
+tbody tr{cursor:pointer;transition:background .1s}
+tbody tr:hover td{background:#FAFAF8}
+tbody tr.done-row td{opacity:.55}
+.u{font-weight:600;font-size:13px}
+.un{font-size:11px;color:var(--muted);margin-top:1px}
+.dest{font-size:13px;font-weight:500}
+.mwarn{font-size:10px;color:var(--orange);margin-top:2px}
+.fecha{font-size:12px;color:var(--muted);white-space:nowrap}
+.tipo{font-size:12px;color:var(--muted)}
+.ei{display:flex;align-items:center;gap:4px;font-size:11px}
+.ei-ok{color:var(--green)}.ei-no{color:var(--red)}.ei-warn{color:var(--orange)}
+
+/* BADGES */
+.badge{display:inline-flex;align-items:center;gap:3px;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:600;white-space:nowrap}
+.b-ok{background:#F0FDF4;color:#16A34A;border:1px solid #BBF7D0}
+.b-notion{background:#FFF7ED;color:#EA580C;border:1px solid #FED7AA}
+.b-camp{background:#FFF7ED;color:#D97706;border:1px solid #FDE68A}
+.b-noemail{background:#FEF2F2;color:#DC2626;border:1px solid #FECACA}
+.b-pend{background:#F9FAFB;color:#6B7280;border:1px solid #E5E7EB}
+.b-done{background:#F0FDF4;color:#15803D;border:1px solid #86EFAC}
+.b-sent{background:#EFF6FF;color:#2563EB;border:1px solid #BFDBFE}
+
+/* ACTION BUTTONS */
+.acts{display:flex;gap:5px;align-items:center;justify-content:flex-end;flex-wrap:nowrap}
+.btn{padding:4px 11px;border-radius:var(--r);font-size:11px;font-weight:600;cursor:pointer;border:1px solid transparent;transition:.15s;font-family:var(--font);display:inline-flex;align-items:center;gap:4px;white-space:nowrap}
+.btn-y{background:var(--yellow);color:var(--black);border-color:var(--yellow)}
+.btn-y:hover:not(:disabled){background:#ecc000;box-shadow:0 2px 8px rgba(255,209,0,.4)}
+.btn-k{background:var(--card);color:var(--text);border-color:var(--border)}
+.btn-k:hover:not(:disabled){background:var(--black);color:#fff;border-color:var(--black)}
+.btn-g{background:#F0FDF4;color:#15803D;border:1px solid #86EFAC}
+.btn-g:hover{background:#DCFCE7}
+.btn-ghost{background:transparent;color:var(--muted);border-color:transparent;padding:4px 7px}
+.btn-ghost:hover{background:var(--bg);color:var(--text)}
+.btn:disabled{background:#F3F4F6 !important;color:var(--faint) !important;border-color:var(--border) !important;cursor:not-allowed !important;box-shadow:none !important;opacity:.6}
+.sent-indicator{font-size:10px;font-weight:600;color:var(--green);display:flex;align-items:center;gap:3px;white-space:nowrap}
+
+/* LOADING & EMPTY */
+.loading-state{text-align:center;padding:60px 32px;color:var(--muted)}
+.loading-tent{font-size:36px;display:block;margin-bottom:12px;animation:bounce .8s ease-in-out infinite alternate}
+@keyframes bounce{from{transform:translateY(0)}to{transform:translateY(-8px)}}
+.empty{text-align:center;padding:60px 32px}
+.empty-tent{font-size:40px;display:block;margin-bottom:12px}
+.empty h3{font-size:15px;font-weight:700;color:var(--muted);margin-bottom:6px}
+.empty p{font-size:12px;color:var(--faint);max-width:280px;margin:0 auto;line-height:1.6}
+.empty-success{color:var(--green) !important}
+
+/* ── STATS (Todas tab) ── */
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:var(--rl);padding:16px 18px;box-shadow:var(--sh)}
+.stat-label{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);margin-bottom:6px}
+.stat-value{font-size:28px;font-weight:700;line-height:1;color:var(--text)}
+.stat-sub{font-size:11px;color:var(--muted);margin-top:4px}
+.stat-card.accent{border-left:3px solid var(--yellow)}
+.stat-card.green{border-left:3px solid var(--green)}
+.stat-card.orange{border-left:3px solid var(--orange)}
+.stat-card.blue{border-left:3px solid var(--blue)}
+
+/* DEST BARS */
+.bars-section{background:var(--card);border:1px solid var(--border);border-radius:var(--rl);padding:18px 20px;margin-bottom:20px;box-shadow:var(--sh)}
+.bars-title{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);margin-bottom:14px}
+.bar-row{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.bar-label{font-size:12px;font-weight:500;color:var(--text);width:160px;flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bar-track{flex:1;height:8px;background:var(--bg);border-radius:4px;overflow:hidden}
+.bar-fill{height:100%;background:var(--yellow);border-radius:4px;transition:width .5s ease}
+.bar-n{font-size:11px;font-weight:600;color:var(--muted);width:24px;text-align:right;flex-shrink:0}
+
+/* OVERLAY & PANEL */
+.ov{position:fixed;inset:0;background:rgba(0,0,0,.28);z-index:200;opacity:0;pointer-events:none;transition:opacity .2s}
+.ov.open{opacity:1;pointer-events:all}
+.panel{position:fixed;top:0;right:0;bottom:0;width:460px;background:var(--card);box-shadow:var(--shl);z-index:201;transform:translateX(100%);transition:transform .25s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column;overflow:hidden}
+.panel.open{transform:translateX(0)}
+.ph{padding:18px 22px;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;justify-content:space-between;flex-shrink:0}
+.ph-title{font-size:15px;font-weight:700}
+.ph-sub{font-size:11px;color:var(--muted);margin-top:3px}
+.btn-close{background:none;border:none;cursor:pointer;padding:3px;color:var(--faint);border-radius:4px;transition:.15s;display:flex}
+.btn-close:hover{background:var(--bg);color:var(--text)}
+.pb{flex:1;overflow-y:auto;padding:18px 22px;display:flex;flex-direction:column;gap:18px}
+.ps-title{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);margin-bottom:8px}
+.ig{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.ii{background:var(--bg);border-radius:var(--r);padding:9px 11px}
+.il{font-size:9px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--faint);margin-bottom:3px}
+.iv{font-size:12px;font-weight:500;color:var(--text)}
+
+/* NOTION INPUT */
+.ni-wrap{display:flex;gap:7px}
+.ni{flex:1;padding:8px 11px;border:1.5px solid var(--border);border-radius:var(--r);font-family:var(--font);font-size:12px;color:var(--text);background:var(--card);transition:border-color .15s;outline:none}
+.ni:focus{border-color:var(--black)}.ni.valid{border-color:var(--green)}.ni.invalid{border-color:var(--red)}
+.btn-save{background:var(--black);color:#fff;border:none;padding:8px 13px;border-radius:var(--r);font-size:11px;font-weight:700;cursor:pointer;transition:.15s;font-family:var(--font);white-space:nowrap}
+.btn-save:hover{background:#333}
+.ni-status{font-size:10px;margin-top:4px;display:flex;align-items:center;gap:3px}
+.ni-ok{color:var(--green)}.ni-warn{color:var(--orange)}.ni-err{color:var(--red)}
+
+/* EMAIL PREVIEW */
+.ep{background:var(--bg);border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.ep-head{padding:10px 13px;border-bottom:1px solid var(--border);background:#fff;display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+.ep-subj{font-size:11px;font-weight:700}
+.ep-to{font-size:10px;color:var(--faint);margin-top:2px}
+.btn-copy{background:none;border:1px solid var(--border);border-radius:4px;padding:3px 9px;font-size:10px;font-weight:600;cursor:pointer;color:var(--muted);transition:.15s;font-family:var(--font);display:flex;align-items:center;gap:3px;flex-shrink:0}
+.btn-copy:hover{background:var(--black);color:#fff;border-color:var(--black)}
+.btn-copy:disabled{opacity:.4;cursor:not-allowed}
+.ep-body{padding:13px;font-size:11px;line-height:1.75;color:var(--text)}
+.ep-body a{color:var(--blue);text-decoration:underline}
+.ep-body .link-miss{color:var(--red);font-style:italic}
+
+/* PANEL DONE SECTION */
+.done-section{background:#F0FDF4;border:1px solid #BBF7D0;border-radius:10px;padding:12px 14px}
+.done-section-title{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#15803D;margin-bottom:10px}
+.done-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.done-row:last-child{margin-bottom:0}
+.done-label{font-size:12px;color:var(--text)}
+.btn-mark{padding:4px 12px;border-radius:var(--r);font-size:11px;font-weight:700;cursor:pointer;border:none;font-family:var(--font);transition:.15s}
+.btn-mark-do{background:var(--yellow);color:var(--black)}.btn-mark-do:hover{background:#ecc000}
+.btn-mark-undo{background:#BBF7D0;color:#15803D}.btn-mark-undo:hover{background:#86EFAC}
+
+/* PANEL FOOTER */
+.pf{padding:14px 22px;border-top:1px solid var(--border);display:flex;gap:7px;flex-shrink:0}
+.btn-send{flex:1;padding:9px;border-radius:var(--r);font-size:12px;font-weight:700;cursor:pointer;border:none;transition:.15s;font-family:var(--font);display:flex;align-items:center;justify-content:center;gap:6px}
+.btn-send-y{background:var(--yellow);color:var(--black)}.btn-send-y:hover:not(:disabled){background:#ecc000;box-shadow:0 4px 14px rgba(255,209,0,.4)}
+.btn-send-k{background:var(--black);color:#fff}.btn-send-k:hover:not(:disabled){background:#222}
+.btn-send:disabled{background:#F3F4F6;color:var(--faint);cursor:not-allowed}
+
+/* FOOTER */
+.footer{border-top:1px solid var(--border);background:var(--card);padding:10px 28px;display:flex;align-items:center;gap:16px;font-size:11px;color:var(--faint)}
+.fdot{width:6px;height:6px;border-radius:50%;background:var(--green);flex-shrink:0}
+
+/* TOAST */
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(70px);color:#fff;padding:10px 18px;border-radius:10px;font-size:12px;font-weight:600;z-index:500;transition:transform .28s cubic-bezier(.4,0,.2,1);display:flex;align-items:center;gap:7px;box-shadow:var(--shl);white-space:nowrap;pointer-events:none}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.toast.info{background:var(--black)}.toast.success{background:#15803D}.toast.error{background:#B91C1C}.toast.warning{background:#B45309}
+
+::-webkit-scrollbar{width:4px;height:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--wgray);border-radius:10px}
+
+@media(max-width:900px){
+  .hd{padding:0 14px}.hd-pills{display:none}
+  .main{padding:14px}.filters{padding:9px 14px}
+  .panel{width:100%}.stats-grid{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+<body>
+
+<div class="toast" id="toast"></div>
+
+<!-- HEADER -->
+<header class="hd">
+  <div class="logo">
+    <span class="logo-t">⛺</span>
+    <div><div class="logo-b">KAMPAOH</div><div class="logo-s">Influencer Hub</div></div>
+  </div>
+  <div class="hd-sep"></div>
+  <div class="hd-pills">
+    <div class="pill pill-y"><span class="dot"></span><span id="s-comp">—</span></div>
+    <div class="pill pill-w"><span class="dot"></span><span id="s-pend">—</span></div>
+    <div class="pill pill-g"><span class="dot"></span><span id="s-done">—</span></div>
+  </div>
+  <div class="hd-right">
+    <div class="conn-badge">
+      <span class="conn-dot loading" id="connDot"></span>
+      <span id="connLabel">Conectando…</span>
+    </div>
+    <button class="btn-refresh" id="btnRefresh" onclick="loadData()">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+      Actualizar
+    </button>
+  </div>
+</header>
+
+<!-- TABS -->
+<div class="tab-bar">
+  <button class="tab active" id="tab-pend" onclick="switchTab('pendientes')">
+    Pendientes <span class="tab-badge" id="tb-pend">0</span>
+  </button>
+  <button class="tab" id="tab-todas" onclick="switchTab('todas')">
+    Todas las colaboraciones <span class="tab-badge" id="tb-todas">0</span>
+  </button>
+</div>
+
+<!-- ═══════════ PENDIENTES VIEW ═══════════ -->
+<div class="view active" id="view-pendientes">
+  <div class="filters" id="filters-pend">
+    <div class="fi wide">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" id="fp-search" placeholder="Buscar username o nombre…" oninput="renderPendientes()">
+    </div>
+    <div class="fi">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+      <select id="fp-dest" onchange="renderPendientes()"><option value="">Todos los destinos</option></select>
+    </div>
+    <div class="fi">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      <select id="fp-estado" onchange="renderPendientes()">
+        <option value="">Todos los estados</option>
+        <option value="falta_link_notion">Falta link Notion</option>
+        <option value="sin_email">Sin email influencer</option>
+        <option value="camping_sin_email">Camping sin email</option>
+        <option value="lista_para_briefing">Lista para enviar</option>
+      </select>
+    </div>
+    <div class="fi">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/></svg>
+      <select id="fp-sort" onchange="renderPendientes()">
+        <option value="fecha_asc">Fecha ↑ (más próximas)</option>
+        <option value="fecha_desc">Fecha ↓</option>
+        <option value="username">Username A–Z</option>
+        <option value="destino">Destino A–Z</option>
+      </select>
+    </div>
+    <span class="f-count" id="fp-count">—</span>
+  </div>
+
+  <div class="main">
+    <div class="tcard" id="pend-card">
+      <table>
+        <thead>
+          <tr>
+            <th>INFLUENCER</th><th>DESTINO</th><th>FECHA VISITA</th>
+            <th>TIPOLOGÍA</th><th>EMAIL</th><th>CAMPING</th>
+            <th>ESTADO</th><th>ACCIONES</th>
+          </tr>
+        </thead>
+        <tbody id="tbody-pend"></tbody>
+      </table>
+      <div id="empty-pend" class="empty" style="display:none">
+        <span class="empty-tent">✓</span>
+        <h3 class="empty-success">¡Todo al día!</h3>
+        <p>No hay colaboraciones pendientes de envío.<br>Revisa la pestaña <strong>Todas</strong> para ver el histórico.</p>
+      </div>
+      <div id="loading-pend" class="loading-state">
+        <span class="loading-tent">⛺</span>
+        <p>Cargando datos desde Google Sheets…</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ TODAS VIEW ═══════════ -->
+<div class="view" id="view-todas">
+  <div class="filters">
+    <div class="fi wide">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" id="ft-search" placeholder="Buscar username o nombre…" oninput="renderTodas()">
+    </div>
+    <div class="fi">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+      <select id="ft-dest" onchange="renderTodas()"><option value="">Todos los destinos</option></select>
+    </div>
+    <div class="fi">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      <select id="ft-fecha" onchange="renderTodas()"><option value="">Cualquier fecha</option></select>
+    </div>
+    <div class="fi">
+      <select id="ft-done" onchange="renderTodas()" style="border:none;background:transparent;font-family:var(--font);font-size:12px;color:var(--text);outline:none">
+        <option value="">Todos</option>
+        <option value="pendiente">Solo pendientes</option>
+        <option value="done">Solo enviados</option>
+      </select>
+    </div>
+    <div class="fi">
+      <select id="ft-sort" onchange="renderTodas()" style="border:none;background:transparent;font-family:var(--font);font-size:12px;color:var(--text);outline:none">
+        <option value="fecha_asc">Fecha ↑</option>
+        <option value="fecha_desc">Fecha ↓</option>
+        <option value="username">Username A–Z</option>
+        <option value="destino">Destino A–Z</option>
+      </select>
+    </div>
+    <span class="f-count" id="ft-count">—</span>
+  </div>
+
+  <div class="main">
+    <!-- STATS CARDS -->
+    <div class="stats-grid" id="stats-grid">
+      <div class="stat-card accent">
+        <div class="stat-label">Total completadas 2026</div>
+        <div class="stat-value" id="st-total">—</div>
+        <div class="stat-sub">colaboraciones</div>
+      </div>
+      <div class="stat-card green">
+        <div class="stat-label">Briefings enviados</div>
+        <div class="stat-value" id="st-sent">—</div>
+        <div class="stat-sub" id="st-sent-pct">—</div>
+      </div>
+      <div class="stat-card orange">
+        <div class="stat-label">Pendientes de envío</div>
+        <div class="stat-value" id="st-pend">—</div>
+        <div class="stat-sub">por gestionar</div>
+      </div>
+      <div class="stat-card blue">
+        <div class="stat-label">Campings sin email</div>
+        <div class="stat-value" id="st-nocamp">—</div>
+        <div class="stat-sub">no se puede notificar</div>
+      </div>
+    </div>
+
+    <!-- DESTINOS BARS -->
+    <div class="bars-section">
+      <div class="bars-title">Colaboraciones por destino</div>
+      <div id="dest-bars"></div>
+    </div>
+
+    <!-- TABLE -->
+    <div class="tcard">
+      <table>
+        <thead>
+          <tr>
+            <th>INFLUENCER</th><th>DESTINO</th><th>FECHA</th>
+            <th>TIPOLOGÍA</th><th>EMAIL</th><th>CAMPING</th>
+            <th>ESTADO ENVÍO</th><th>ACCIONES</th>
+          </tr>
+        </thead>
+        <tbody id="tbody-todas"></tbody>
+      </table>
+      <div id="loading-todas" class="loading-state">
+        <span class="loading-tent">⛺</span>
+        <p>Cargando datos desde Google Sheets…</p>
+      </div>
+      <div id="empty-todas" class="empty" style="display:none">
+        <span class="empty-tent">⛺</span>
+        <h3>Sin resultados</h3>
+        <p>Prueba a cambiar los filtros activos.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  <div class="fdot"></div>
+  <span>Google Sheets · Live</span>
+  <span>·</span>
+  <span id="f-time">—</span>
+  <span>·</span>
+  <span id="f-records">—</span>
+</div>
+
+<!-- OVERLAY -->
+<div class="ov" id="ov" onclick="closePanel()"></div>
+
+<!-- SIDE PANEL -->
+<div class="panel" id="panel">
+  <div class="ph">
+    <div>
+      <div class="ph-title" id="p-title">—</div>
+      <div class="ph-sub" id="p-sub">—</div>
+    </div>
+    <button class="btn-close" onclick="closePanel()">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+  <div class="pb" id="p-body"></div>
+  <div class="pf">
+    <button class="btn-send btn-send-y" id="btn-b" disabled>
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+      Enviar Briefing
+    </button>
+    <button class="btn-send btn-send-k" id="btn-c" disabled>⛺ Mail Camping</button>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════
+// CONFIG
+// ═══════════════════════════════════════════════════════════════
+const SHEET_ID = '1APiLKksNfNM9EFv92NJfPt0mxHGM5t59';
+
+// ═══════════════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════════════
+const S = {
+  all: [],        // enriched influencers (status=Completada)
+  campings: [],
+  selected: null,
+  notionLinks: {}, // localStorage overrides
+  sent: {},        // { id: { b: bool, c: bool } } — briefing / camping sent
+  loadTime: null,
+};
+
+// Status config
+const SC = {
+  lista_para_briefing: {label:'Lista para enviar',  cls:'b-ok'},
+  falta_link_notion:   {label:'Falta link Notion',  cls:'b-notion'},
+  camping_sin_email:   {label:'Camping sin email',  cls:'b-camp'},
+  sin_email:           {label:'Sin email',          cls:'b-noemail'},
+  pendiente:           {label:'Pendiente revisión', cls:'b-pend'},
+};
+
+// ═══════════════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════════════
+function init() {
+  try {
+    const nl = localStorage.getItem('kmp_notion');
+    if (nl) S.notionLinks = JSON.parse(nl);
+    const se = localStorage.getItem('kmp_sent');
+    if (se) S.sent = JSON.parse(se);
+  } catch(e) {}
+  loadData();
+}
+
+// ═══════════════════════════════════════════════════════════════
+// FETCH GOOGLE SHEETS
+// ═══════════════════════════════════════════════════════════════
+async function fetchSheet(name) {
+  const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(name)}&headers=1`;
+  const res = await fetch(url);
+  const text = await res.text();
+  const m = text.match(/google\.visualization\.Query\.setResponse\(([\s\S]*?)\);\s*$/);
+  if (!m) throw new Error('Bad response for sheet: ' + name);
+  const data = JSON.parse(m[1]);
+  if (data.status !== 'ok') throw new Error(data.errors?.[0]?.message || 'Sheet error');
+  return data.table;
+}
+
+function tableToRows(table) {
+  if (!table?.rows) return [];
+  return table.rows.map(row =>
+    (row.c || []).map(cell => {
+      if (!cell) return null;
+      // Handle Date objects from gviz: value like Date(2026,5,14)
+      if (typeof cell.v === 'string' && cell.f) return cell.f; // use formatted value
+      return cell.v ?? null;
+    })
+  );
+}
+
+function cleanStr(v) { return String(v ?? '').trim(); }
+
+function parseFecha(v) {
+  if (!v) return '';
+  if (v instanceof Date) {
+    const d = v.getDate(), m = v.getMonth()+1, y = v.getFullYear();
+    return `${String(d).padStart(2,'0')}/${String(m).padStart(2,'0')}/${y}`;
+  }
+  // gviz Date() format
+  if (typeof v === 'string') {
+    const dm = v.match(/^Date\((\d+),(\d+),(\d+)\)$/);
+    if (dm) {
+      const [,y,m,d] = dm.map(Number);
+      return `${String(d).padStart(2,'0')}/${String(m+1).padStart(2,'0')}/${y}`;
+    }
+    return v.trim();
+  }
+  if (typeof v === 'number') {
+    const d = new Date(Math.round((v-25569)*86400000));
+    return `${String(d.getUTCDate()).padStart(2,'0')}/${String(d.getUTCMonth()+1).padStart(2,'0')}/${d.getUTCFullYear()}`;
+  }
+  return '';
+}
+
+async function loadData() {
+  setConn('loading', 'Conectando…');
+  setRefreshSpinning(true);
+  showLoading(true);
+
+  try {
+    const [tBBDD, tColab, tCamp] = await Promise.all([
+      fetchSheet('BBDD 2026'),
+      fetchSheet('Colaboradores 2026'),
+      fetchSheet('Campings'),
+    ]);
+
+    // Parse campings
+    const campings = [];
+    tableToRows(tCamp).forEach(r => {
+      const nombre = cleanStr(r[0]);
+      if (!nombre) return;
+      campings.push({ nombre, email: cleanStr(r[3]) });
+    });
+    S.campings = campings;
+
+    // Parse influencers from both sheets
+    const influencers = [];
+    let counter = 1;
+
+    const parseRows = (rows, fuente) => {
+      rows.forEach(r => {
+        if (cleanStr(r[4]) !== 'Completada') return;
+        const u = cleanStr(r[0]);
+        if (!u) return;
+        // Only 2026 — check fecha visita year
+        const fecha = parseFecha(r[6]);
+        const year = fecha ? fecha.split('/')[2] : null;
+        if (year && year !== '2026') return;
+        const id = `${fuente.slice(0,1)}${counter++}_${u.replace(/[^a-z0-9]/gi,'')}`;
+        influencers.push({
+          id,
+          username: u.startsWith('@') ? u : `@${u}`,
+          nombre:   cleanStr(r[1]),
+          fecha,
+          destino:  cleanStr(r[7]),
+          email:    cleanStr(r[8]),
+          tipologia:cleanStr(r[9]),
+          linkSheet: cleanStr(r[10]), // col K — Link Notion from sheet
+          fuente,
+        });
+      });
+    };
+
+    parseRows(tableToRows(tBBDD), 'BBDD 2026');
+    parseRows(tableToRows(tColab), 'Colaboradores 2026');
+
+    // Enrich
+    S.all = influencers.map(r => enrich(r));
+    S.loadTime = new Date();
+
+    populateFilterOptions();
+    renderAll();
+    updateStats();
+    updateFooter();
+    setConn('ok', 'Conectado · Google Sheets');
+  } catch(err) {
+    console.error(err);
+    setConn('error', 'Error de conexión');
+    toast('Error al cargar datos. Verifica que el documento es público.', 'error');
+    showLoading(false);
+  }
+  setRefreshSpinning(false);
+}
+
+// ═══════════════════════════════════════════════════════════════
+// ENRICH
+// ═══════════════════════════════════════════════════════════════
+function enrich(r) {
+  // Notion link: sheet column K takes priority, then localStorage override
+  const link = r.linkSheet || S.notionLinks[r.id] || '';
+  const campMatch = matchCamping(r.destino, S.campings);
+  const emailCamping = campMatch?.email || null;
+  const estado = computeEstado(r.email, link, campMatch, emailCamping);
+  const sent = S.sent[r.id] || {b: false, c: false};
+  const isDone = sent.b && (sent.c || !emailCamping);
+  return { ...r, link, campMatch, emailCamping, estado, sent, isDone };
+}
+
+// ═══════════════════════════════════════════════════════════════
+// CAMPING MATCH — handles "Kampaoh " prefix
+// ═══════════════════════════════════════════════════════════════
+function norm(s) {
+  return String(s||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/\s+/g,' ').trim();
+}
+function stripKampaoh(s) { return s.replace(/^kampaoh\s+/i, ''); }
+
+function matchCamping(destino, campings) {
+  const d = norm(destino);
+  if (!d) return null;
+
+  for (const c of campings) {
+    const cn  = norm(c.nombre);
+    const cns = stripKampaoh(cn);
+    if (cn === d || cns === d) return { ...c, conf: 'exacto' };
+  }
+  for (const c of campings) {
+    const cn  = norm(c.nombre);
+    const cns = stripKampaoh(cn);
+    if (cn.includes(d) || d.includes(cn) || cns.includes(d) || d.includes(cns))
+      return { ...c, conf: 'parcial' };
+  }
+  return null;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// STATUS
+// ═══════════════════════════════════════════════════════════════
+function computeEstado(email, link, campMatch, emailCamping) {
+  if (!email)      return 'sin_email';
+  if (!link)       return 'falta_link_notion';
+  if (!campMatch)  return 'pendiente';
+  if (!emailCamping) return 'camping_sin_email';
+  return 'lista_para_briefing';
+}
+
+function isTrulyPending(i) {
+  // show in Pendientes if briefing not sent, regardless of block reason
+  return !i.isDone;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// TABS
+// ═══════════════════════════════════════════════════════════════
+let currentTab = 'pendientes';
+function switchTab(tab) {
+  currentTab = tab;
+  document.getElementById('view-pendientes').classList.toggle('active', tab==='pendientes');
+  document.getElementById('view-todas').classList.toggle('active', tab==='todas');
+  document.getElementById('tab-pend').classList.toggle('active', tab==='pendientes');
+  document.getElementById('tab-todas').classList.toggle('active', tab==='todas');
+}
+
+// ═══════════════════════════════════════════════════════════════
+// RENDER ALL
+// ═══════════════════════════════════════════════════════════════
+function renderAll() {
+  showLoading(false);
+  renderPendientes();
+  renderTodas();
+}
+
+// ═══════════════════════════════════════════════════════════════
+// RENDER PENDIENTES
+// ═══════════════════════════════════════════════════════════════
+function renderPendientes() {
+  const q    = norm(val('fp-search'));
+  const dest = val('fp-dest');
+  const est  = val('fp-estado');
+  const sort = val('fp-sort');
+
+  let data = S.all.filter(i => {
+    if (!isTrulyPending(i)) return false;
+    if (q && !norm(i.username).includes(q) && !norm(i.nombre).includes(q)) return false;
+    if (dest && i.destino !== dest) return false;
+    if (est && i.estado !== est) return false;
+    return true;
+  });
+
+  data = sortRows(data, sort);
+  document.getElementById('fp-count').textContent = `${data.length} pendientes`;
+  document.getElementById('tb-pend').textContent = data.length;
+
+  const tbody = document.getElementById('tbody-pend');
+  const empty = document.getElementById('empty-pend');
+
+  if (!data.length) {
+    tbody.innerHTML = '';
+    empty.style.display = 'block';
+    return;
+  }
+  empty.style.display = 'none';
+  tbody.innerHTML = data.map(i => rowHtml(i, true)).join('');
+}
+
+// ═══════════════════════════════════════════════════════════════
+// RENDER TODAS
+// ═══════════════════════════════════════════════════════════════
+function renderTodas() {
+  const q    = norm(val('ft-search'));
+  const dest = val('ft-dest');
+  const fecha = val('ft-fecha');
+  const done = val('ft-done');
+  const sort = val('ft-sort');
+
+  let data = S.all.filter(i => {
+    if (q && !norm(i.username).includes(q) && !norm(i.nombre).includes(q)) return false;
+    if (dest && i.destino !== dest) return false;
+    if (fecha && !(i.fecha||'').includes(fecha)) return false;
+    if (done === 'done' && !i.isDone) return false;
+    if (done === 'pendiente' && i.isDone) return false;
+    return true;
+  });
+
+  data = sortRows(data, sort);
+  document.getElementById('ft-count').textContent = `${data.length} de ${S.all.length}`;
+  document.getElementById('tb-todas').textContent = S.all.length;
+
+  renderDestBars();
+
+  const tbody = document.getElementById('tbody-todas');
+  const empty = document.getElementById('empty-todas');
+
+  if (!data.length) {
+    tbody.innerHTML = '';
+    empty.style.display = 'block';
+    return;
+  }
+  empty.style.display = 'none';
+  tbody.innerHTML = data.map(i => rowHtml(i, false)).join('');
+}
+
+// ═══════════════════════════════════════════════════════════════
+// ROW HTML (shared)
+// ═══════════════════════════════════════════════════════════════
+function rowHtml(i, isPendView) {
+  const sc = SC[i.estado] || SC.pendiente;
+  const canB = !!(i.email && i.link);
+  const canC = !!i.emailCamping;
+
+  // Sent state for this row
+  const bSent = i.sent.b;
+  const cSent = i.sent.c;
+
+  // Status column: in Todas, show done badge if fully done
+  const statusCell = isPendView
+    ? `<span class="badge ${sc.cls}">${sc.label}</span>`
+    : (i.isDone
+        ? `<span class="badge b-done">✓ Enviado</span>`
+        : `<span class="badge ${sc.cls}">${sc.label}</span>`);
+
+  return `<tr class="${i.isDone && !isPendView ? 'done-row' : ''}" onclick="openPanel('${i.id}')">
+    <td>
+      <div class="u">${h(i.username)}</div>
+      <div class="un">${h(i.nombre)||'<span style="color:var(--faint)">—</span>'}</div>
+    </td>
+    <td>
+      <div class="dest">${h(i.destino)||'—'}</div>
+      ${i.campMatch?.conf==='parcial'?'<div class="mwarn">⚠ Match parcial</div>':''}
+    </td>
+    <td><div class="fecha">${h(i.fecha)||'—'}</div></td>
+    <td><div class="tipo">${h(i.tipologia)||'—'}</div></td>
+    <td>${emailCell(i.email)}</td>
+    <td>${campEmailCell(i)}</td>
+    <td>${statusCell}</td>
+    <td onclick="event.stopPropagation()">
+      <div class="acts">
+        ${bSent
+          ? `<span class="sent-indicator">✓ Brief.</span>`
+          : `<button class="btn btn-y" ${canB?'':'disabled'} onclick="doBriefing('${i.id}')" title="${canB?'':'!email o !Notion'}">Brief.</button>`
+        }
+        ${canC
+          ? (cSent
+              ? `<span class="sent-indicator">✓ Camp.</span>`
+              : `<button class="btn btn-k" onclick="doCamping('${i.id}')">⛺</button>`)
+          : `<button class="btn btn-k" disabled title="Camping sin email">⛺</button>`
+        }
+        <button class="btn btn-ghost" onclick="openPanel('${i.id}')">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        </button>
+      </div>
+    </td>
+  </tr>`;
+}
+
+function emailCell(email) {
+  return email
+    ? `<div class="ei ei-ok"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>${h(email)}</div>`
+    : `<div class="ei ei-no"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>Sin email</div>`;
+}
+function campEmailCell(i) {
+  if (i.emailCamping) return `<div class="ei ei-ok"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>${h(i.emailCamping)}</div>`;
+  if (i.campMatch) return `<div class="ei ei-no"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>Sin email</div>`;
+  return `<div class="ei ei-warn"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>No identificado</div>`;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// STATS & BARS
+// ═══════════════════════════════════════════════════════════════
+function updateStats() {
+  const total = S.all.length;
+  const sent  = S.all.filter(i => i.isDone).length;
+  const pend  = total - sent;
+  const noCamp = S.all.filter(i => !i.emailCamping).length;
+
+  document.getElementById('s-comp').textContent  = `${total} completadas`;
+  document.getElementById('s-pend').textContent  = `${pend} pendientes`;
+  document.getElementById('s-done').textContent  = `${sent} enviadas`;
+  document.getElementById('st-total').textContent = total;
+  document.getElementById('st-sent').textContent  = sent;
+  document.getElementById('st-sent-pct').textContent = total ? `${Math.round(sent/total*100)}% del total` : '—';
+  document.getElementById('st-pend').textContent  = pend;
+  document.getElementById('st-nocamp').textContent = noCamp;
+}
+
+function renderDestBars() {
+  const counts = {};
+  S.all.forEach(i => { if (i.destino) counts[i.destino] = (counts[i.destino]||0)+1; });
+  const sorted = Object.entries(counts).sort((a,b)=>b[1]-a[1]).slice(0,8);
+  const max = sorted[0]?.[1] || 1;
+  document.getElementById('dest-bars').innerHTML = sorted.map(([dest,n]) => `
+    <div class="bar-row">
+      <div class="bar-label" title="${h(dest)}">${h(dest)}</div>
+      <div class="bar-track"><div class="bar-fill" style="width:${Math.round(n/max*100)}%"></div></div>
+      <div class="bar-n">${n}</div>
+    </div>
+  `).join('');
+}
+
+function updateFooter() {
+  document.getElementById('f-time').textContent = S.loadTime
+    ? `Actualizado ${S.loadTime.toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'})}`
+    : '—';
+  document.getElementById('f-records').textContent = `${S.all.length} colaboraciones completadas`;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// FILTER OPTIONS
+// ═══════════════════════════════════════════════════════════════
+function populateFilterOptions() {
+  const destinos = [...new Set(S.all.map(i=>i.destino).filter(Boolean))].sort();
+  const meses    = [...new Set(S.all.map(i=>{const p=(i.fecha||'').split('/');return p.length===3?`${p[1]}/${p[2]}`:null}).filter(Boolean))].sort();
+
+  ['fp-dest','ft-dest'].forEach(id => {
+    const s = document.getElementById(id);
+    const cv = s.value;
+    s.innerHTML = `<option value="">Todos los destinos</option>` + destinos.map(d=>`<option value="${h(d)}">${h(d)}</option>`).join('');
+    if (cv) s.value = cv;
+  });
+  const sf = document.getElementById('ft-fecha');
+  const cfv = sf.value;
+  sf.innerHTML = `<option value="">Cualquier fecha</option>` + meses.map(m=>`<option value="${h(m)}">${h(m)}</option>`).join('');
+  if (cfv) sf.value = cfv;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// SIDE PANEL
+// ═══════════════════════════════════════════════════════════════
+function openPanel(id) {
+  const i = S.all.find(x=>x.id===id);
+  if (!i) return;
+  S.selected = id;
+  document.getElementById('p-title').textContent = i.username;
+  document.getElementById('p-sub').textContent   = [i.nombre,i.tipologia,i.destino].filter(Boolean).join(' · ');
+  buildPanel(i);
+  const canB = !!(i.email && i.link);
+  const canC = !!i.emailCamping;
+  const btnB = document.getElementById('btn-b');
+  const btnC = document.getElementById('btn-c');
+  btnB.disabled = !canB;
+  btnB.onclick  = () => doBriefing(id);
+  btnC.disabled = !canC;
+  btnC.onclick  = () => doCamping(id);
+  document.getElementById('ov').classList.add('open');
+  document.getElementById('panel').classList.add('open');
+}
+function closePanel() {
+  document.getElementById('ov').classList.remove('open');
+  document.getElementById('panel').classList.remove('open');
+  S.selected = null;
+}
+
+function buildPanel(i) {
+  const hasLink = !!i.link;
+  document.getElementById('p-body').innerHTML = `
+    <div>
+      <div class="ps-title">Información</div>
+      <div class="ig">
+        <div class="ii"><div class="il">Username</div><div class="iv">${h(i.username)}</div></div>
+        <div class="ii"><div class="il">Nombre real</div><div class="iv">${h(i.nombre)||'—'}</div></div>
+        <div class="ii"><div class="il">Destino</div><div class="iv">${h(i.destino)||'—'}</div></div>
+        <div class="ii"><div class="il">Fecha visita</div><div class="iv">${h(i.fecha)||'—'}</div></div>
+        <div class="ii"><div class="il">Tipología</div><div class="iv">${h(i.tipologia)||'—'}</div></div>
+        <div class="ii"><div class="il">Fuente</div><div class="iv" style="font-size:10px;color:var(--faint)">${h(i.fuente)}</div></div>
+      </div>
+    </div>
+
+    <div>
+      <div class="ps-title">Contacto</div>
+      <div class="ig">
+        <div class="ii"><div class="il">Email influencer</div><div class="iv" style="font-size:11px;word-break:break-all">${i.email?`<span style="color:var(--green)">✓</span> ${h(i.email)}`:`<span style="color:var(--red)">✗</span> <span style="color:var(--faint)">Sin email</span>`}</div></div>
+        <div class="ii"><div class="il">Email camping</div><div class="iv" style="font-size:11px;word-break:break-all">${i.emailCamping?`<span style="color:var(--green)">✓</span> ${h(i.emailCamping)}`:i.campMatch?`<span style="color:var(--red)">✗</span> <span style="color:var(--faint)">Sin email</span>`:`<span style="color:var(--orange)">⚠</span> <span style="color:var(--faint)">No identificado</span>`}</div></div>
+      </div>
+    </div>
+
+    <div>
+      <div class="ps-title">Link Briefing Notion ${i.linkSheet?'<span style="color:var(--green);font-size:9px;text-transform:none;letter-spacing:0">· desde Google Sheet</span>':''}</div>
+      <div class="ni-wrap">
+        <input type="url" class="ni ${hasLink?'valid':''}" id="ni-input" placeholder="https://notion.so/briefing-…" value="${h(i.link)}" oninput="onNiInput(this)">
+        <button class="btn-save" onclick="saveLink('${i.id}')">Guardar</button>
+      </div>
+      <div class="ni-status ${hasLink?'ni-ok':'ni-warn'}" id="ni-status">
+        ${hasLink?'✓ Link guardado — el email usará "este enlace"':'○ Sin link — necesario para enviar el briefing'}
+      </div>
+    </div>
+
+    <div class="done-section">
+      <div class="done-section-title">Estado de envío</div>
+      <div class="done-row">
+        <span class="done-label">✉ Briefing al influencer</span>
+        ${i.sent.b
+          ? `<button class="btn-mark btn-mark-undo" onclick="toggleSent('${i.id}','b',false)">✓ Enviado · Desmarcar</button>`
+          : `<button class="btn-mark btn-mark-do" onclick="toggleSent('${i.id}','b',true)">Marcar como enviado</button>`
+        }
+      </div>
+      <div class="done-row">
+        <span class="done-label">⛺ Mail al camping</span>
+        ${!i.emailCamping
+          ? `<span style="font-size:11px;color:var(--faint)">Sin email de camping</span>`
+          : i.sent.c
+            ? `<button class="btn-mark btn-mark-undo" onclick="toggleSent('${i.id}','c',false)">✓ Enviado · Desmarcar</button>`
+            : `<button class="btn-mark btn-mark-do" onclick="toggleSent('${i.id}','c',true)">Marcar como enviado</button>`
+        }
+      </div>
+    </div>
+
+    <div>
+      <div class="ps-title">Preview — Email a influencer</div>
+      <div class="ep">
+        <div class="ep-head">
+          <div>
+            <div class="ep-subj">Colaboración Kampaoh ${h(i.destino)} ⛺</div>
+            <div class="ep-to">Para: ${i.email?h(i.email):'<span style="color:var(--red)">sin email</span>'}</div>
+          </div>
+          <button class="btn-copy" onclick="copyText(briefingPlain('${i.id}'))">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            Copiar
+          </button>
+        </div>
+        <div class="ep-body" id="ep-brief"></div>
+      </div>
+    </div>
+
+    <div>
+      <div class="ps-title">Preview — Email a camping</div>
+      <div class="ep">
+        <div class="ep-head">
+          <div>
+            <div class="ep-subj">Colaboración Kampaoh ${h(i.destino)} ⛺</div>
+            <div class="ep-to">Para: ${i.emailCamping?h(i.emailCamping):'<span style="color:var(--red)">sin email de camping</span>'}</div>
+          </div>
+          <button class="btn-copy" ${i.emailCamping?'':'disabled'} onclick="copyText(campingPlain())">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            Copiar
+          </button>
+        </div>
+        <div class="ep-body">${campingHtml()}</div>
+      </div>
+    </div>
+  `;
+  document.getElementById('ep-brief').innerHTML = briefingHtml(i);
+}
+
+// ═══════════════════════════════════════════════════════════════
+// NOTION LINK
+// ═══════════════════════════════════════════════════════════════
+function onNiInput(el) {
+  const v = el.value.trim();
+  const st = document.getElementById('ni-status');
+  if (!v) { el.className='ni'; st.className='ni-status ni-warn'; st.textContent='○ Sin link — necesario para enviar el briefing'; return; }
+  try { new URL(v); el.className='ni valid'; st.className='ni-status ni-ok'; st.textContent='✓ URL válida — recuerda guardar'; }
+  catch { el.className='ni invalid'; st.className='ni-status ni-err'; st.textContent='✗ URL no válida'; }
+}
+
+function saveLink(id) {
+  const val = (document.getElementById('ni-input')?.value||'').trim();
+  if (val) { try { new URL(val); } catch { toast('La URL no es válida','error'); return; } }
+  S.notionLinks[id] = val;
+  try { localStorage.setItem('kmp_notion', JSON.stringify(S.notionLinks)); } catch(e) {}
+  // Re-enrich and re-render
+  const idx = S.all.findIndex(x=>x.id===id);
+  if (idx>-1) { S.all[idx] = enrich({...S.all[idx], linkSheet: val}); }
+  toast(val?'✓ Link de Notion guardado':'Link eliminado','success');
+  renderAll(); updateStats();
+  if (S.selected===id) {
+    const i = S.all.find(x=>x.id===id);
+    if (i) { buildPanel(i); document.getElementById('btn-b').disabled = !(i.email && i.link); }
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// MARK SENT
+// ═══════════════════════════════════════════════════════════════
+function toggleSent(id, key, value) {
+  if (!S.sent[id]) S.sent[id] = { b: false, c: false };
+  S.sent[id][key] = value;
+  try { localStorage.setItem('kmp_sent', JSON.stringify(S.sent)); } catch(e) {}
+  const idx = S.all.findIndex(x=>x.id===id);
+  if (idx>-1) { S.all[idx] = enrich(S.all[idx]); }
+  toast(value ? '✓ Marcado como enviado' : 'Desmarcado', value?'success':'info');
+  renderAll(); updateStats();
+  if (S.selected===id) {
+    const i = S.all.find(x=>x.id===id);
+    if (i) buildPanel(i);
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// EMAILS
+// ═══════════════════════════════════════════════════════════════
+function briefingHtml(i) {
+  const nombre = h(i.nombre||i.username);
+  const dest   = h(i.destino);
+  const linkEl = i.link
+    ? `<a href="${h(i.link)}" target="_blank">este enlace</a>`
+    : `<span class="link-miss">[link Notion pendiente]</span>`;
+  return `Buenos días, ${nombre}:<br><br>Soy Andrea, del departamento de marketing de Kampaoh. ¡Se va acercando la fecha de vuestra llegada a ${dest}! Como sabéis, tenéis una reserva para el ${h(i.fecha)} en Kampaoh en nuestra ${h(i.tipologia)}.<br><br>Comparto contigo en ${linkEl} los aspectos a tener en cuenta acerca de nuestra colaboración. Solo tienes que hacer clic sobre los triángulos para desplegar la información. Si después de revisarlo tienes alguna duda, me dices sin problema.<br><br>Estoy a vuestra disposición para lo que necesitéis. Espero que disfrutéis mucho en Kampaoh ${dest} ⛺❤<br><br>Un abrazo,<br>Andrea<br>Kampaoh · Departamento de Marketing`;
+}
+function campingHtml() {
+  return `Buenos días,<br><br>¿Qué tal? Os informo de que próximamente tenemos la entrada de esta influencer. Podéis consultar todos los datos de la reserva en el localizador.<br><br>Estoy a vuestra disposición para lo que necesitéis.<br><br>Un saludo,<br>Andrea<br>Kampaoh · Departamento de Marketing`;
+}
+function briefingPlain(id) {
+  const i = S.all.find(x=>x.id===id); if (!i) return '';
+  const nombre = i.nombre||i.username;
+  return `Buenos días, ${nombre}:\n\nSoy Andrea, del departamento de marketing de Kampaoh. ¡Se va acercando la fecha de vuestra llegada a ${i.destino}! Como sabéis, tenéis una reserva para el ${i.fecha} en Kampaoh en nuestra ${i.tipologia}.\n\nComparto contigo en este enlace (${i.link}) los aspectos a tener en cuenta acerca de nuestra colaboración. Solo tienes que hacer clic sobre los triángulos para desplegar la información. Si después de revisarlo tienes alguna duda, me dices sin problema.\n\nEstoy a vuestra disposición para lo que necesitéis. Espero que disfrutéis mucho en Kampaoh ${i.destino} ⛺❤\n\nUn abrazo,\nAndrea\nKampaoh · Departamento de Marketing`;
+}
+function campingPlain() {
+  return `Buenos días,\n\n¿Qué tal? Os informo de que próximamente tenemos la entrada de esta influencer. Podéis consultar todos los datos de la reserva en el localizador.\n\nEstoy a vuestra disposición para lo que necesitéis.\n\nUn saludo,\nAndrea\nKampaoh · Departamento de Marketing`;
+}
+
+function doBriefing(id) {
+  const i = S.all.find(x=>x.id===id); if (!i) return;
+  if (!i.email) { toast('Sin email de influencer','error'); return; }
+  if (!i.link)  { toast('Añade el link de Notion antes de enviar','warning'); return; }
+  window.open(`mailto:${encodeURIComponent(i.email)}?subject=${encodeURIComponent(`Colaboración Kampaoh ${i.destino} ⛺`)}&body=${encodeURIComponent(briefingPlain(id))}`);
+  // Auto-mark briefing as sent
+  toggleSent(id, 'b', true);
+}
+function doCamping(id) {
+  const i = S.all.find(x=>x.id===id); if (!i) return;
+  if (!i.emailCamping) { toast('Camping sin email','error'); return; }
+  window.open(`mailto:${encodeURIComponent(i.emailCamping)}?subject=${encodeURIComponent(`Colaboración Kampaoh ${i.destino} ⛺`)}&body=${encodeURIComponent(campingPlain())}`);
+  // Auto-mark camping as sent
+  toggleSent(id, 'c', true);
+}
+function copyText(t) { navigator.clipboard.writeText(t).then(()=>toast('✓ Copiado','success')).catch(()=>toast('No se pudo copiar','error')); }
+
+// ═══════════════════════════════════════════════════════════════
+// UTILS
+// ═══════════════════════════════════════════════════════════════
+function sortRows(data, sort) {
+  return [...data].sort((a,b) => {
+    if (sort==='fecha_asc')  return toTs(a.fecha)-toTs(b.fecha);
+    if (sort==='fecha_desc') return toTs(b.fecha)-toTs(a.fecha);
+    if (sort==='username')   return a.username.localeCompare(b.username);
+    if (sort==='destino')    return (a.destino||'').localeCompare(b.destino||'');
+    return 0;
+  });
+}
+function toTs(f) { if (!f) return 0; const [d,m,y]=(f||'').split('/').map(Number); return new Date(y,m-1,d).getTime()||0; }
+function val(id) { return document.getElementById(id)?.value || ''; }
+function h(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+function showLoading(v) {
+  ['pend','todas'].forEach(k => {
+    const el = document.getElementById(`loading-${k}`);
+    if (el) el.style.display = v ? 'block' : 'none';
+    const tb = document.getElementById(`tbody-${k}`);
+    if (tb && v) tb.innerHTML = '';
+  });
+}
+
+function setConn(state, label) {
+  const dot = document.getElementById('connDot');
+  const lbl = document.getElementById('connLabel');
+  dot.className = 'conn-dot' + (state==='loading'?' loading':state==='error'?' error':'');
+  lbl.textContent = label;
+}
+function setRefreshSpinning(v) {
+  document.getElementById('btnRefresh').classList.toggle('spinning', v);
+}
+
+let _tt;
+function toast(msg, type='info') {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = `toast ${type} show`;
+  clearTimeout(_tt);
+  _tt = setTimeout(()=>el.classList.remove('show'), 3000);
+}
+
+// ═══════════════════════════════════════════════════════════════
+// BOOT
+// ═══════════════════════════════════════════════════════════════
+document.addEventListener('DOMContentLoaded', () => {
+  init();
+  // Auto-refresh every 2 minutes
+  setInterval(loadData, 2 * 60 * 1000);
+});
+</script>
+</body>
+</html>
