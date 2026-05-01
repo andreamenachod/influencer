@@ -69,12 +69,22 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:14
 .main{padding:20px 28px 60px;max-width:1440px;margin:0 auto}
 
 /* TABLE CARD */
-.tcard{background:var(--card);border-radius:var(--rl);box-shadow:var(--sh);border:1px solid var(--border);overflow:hidden}
-table{width:100%;border-collapse:collapse}
-th{padding:9px 14px;text-align:left;font-size:10px;font-weight:700;color:var(--faint);letter-spacing:.08em;text-transform:uppercase;border-bottom:1px solid var(--border);background:#FAFAF8;white-space:nowrap}
-th:first-child{padding-left:20px}th:last-child{padding-right:20px;text-align:right}
-td{padding:11px 14px;border-bottom:1px solid var(--border);vertical-align:middle}
-td:first-child{padding-left:20px}td:last-child{padding-right:20px}
+.tcard{background:var(--card);border-radius:var(--rl);box-shadow:var(--sh);border:1px solid var(--border);overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:900px;table-layout:fixed}
+th{padding:9px 14px;text-align:left;font-size:10px;font-weight:700;color:var(--faint);letter-spacing:.08em;text-transform:uppercase;border-bottom:1px solid var(--border);background:#FAFAF8;white-space:nowrap;overflow:hidden}
+th:first-child{padding-left:20px;width:150px}
+th:nth-child(2){width:110px}
+th:nth-child(3){width:110px}
+th:nth-child(4){width:90px}
+th:nth-child(5){width:170px}
+th:nth-child(6){width:170px}
+th:nth-child(7){width:120px}
+th:last-child{padding-right:20px;text-align:right;width:130px}
+td{padding:11px 14px;border-bottom:1px solid var(--border);vertical-align:middle;overflow:hidden}
+td:first-child{padding-left:20px}
+td:last-child{padding-right:20px}
+.ei{display:flex;align-items:center;gap:4px;font-size:11px;overflow:hidden;min-width:0}
+.ei-txt{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
 tr:last-child td{border-bottom:none}
 tbody tr{cursor:pointer;transition:background .1s}
 tbody tr:hover td{background:#FAFAF8}
@@ -142,6 +152,30 @@ tbody tr.done-row td{opacity:.55}
 .bar-fill{height:100%;background:var(--yellow);border-radius:4px;transition:width .5s ease}
 .bar-n{font-size:11px;font-weight:600;color:var(--muted);width:24px;text-align:right;flex-shrink:0}
 
+/* ── COMPARATIVA ── */
+.comp-wrap{padding:24px 28px;max-width:1100px}
+.comp-section{background:var(--card);border:1px solid var(--border);border-radius:var(--rl);padding:20px 22px;margin-bottom:16px;box-shadow:var(--sh)}
+.comp-section-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.comp-week-nav{display:flex;align-items:center;gap:8px}
+.comp-week-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.comp-wcard{background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:14px 16px;text-align:center}
+.comp-wcard .cwc-label{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);margin-bottom:6px}
+.comp-wcard .cwc-val{font-size:32px;font-weight:700;line-height:1}
+.comp-wcard .cwc-sub{font-size:11px;color:var(--muted);margin-top:4px}
+.comp-wcard.pos{border-left:3px solid var(--green)}.comp-wcard.pos .cwc-val{color:var(--green)}
+.comp-wcard.neg{border-left:3px solid var(--red)}.comp-wcard.neg .cwc-val{color:var(--red)}
+.comp-wcard.neutral{border-left:3px solid var(--faint)}
+.comp-bar-row{display:grid;grid-template-columns:160px 1fr 40px 1fr 40px;align-items:center;gap:8px;margin-bottom:10px}
+.comp-bar-row .cbl{font-size:12px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.comp-bar-track{height:10px;background:var(--bg);border-radius:4px;overflow:hidden}
+.comp-bar-fill26{height:100%;background:var(--black);border-radius:4px}
+.comp-bar-fill25{height:100%;background:var(--wgray);border-radius:4px}
+.comp-bar-n{font-size:11px;font-weight:600;color:var(--muted);text-align:center}
+.comp-legend{display:flex;align-items:center;gap:16px;margin-bottom:12px;font-size:11px;color:var(--muted)}
+.comp-legend span{display:flex;align-items:center;gap:5px}
+.comp-leg-dot{width:10px;height:10px;border-radius:2px;flex-shrink:0}
+.comp-month-row{display:grid;grid-template-columns:90px 1fr 36px 1fr 36px 60px;align-items:center;gap:8px;margin-bottom:8px}
+
 /* OVERLAY & PANEL */
 .ov{position:fixed;inset:0;background:rgba(0,0,0,.28);z-index:200;opacity:0;pointer-events:none;transition:opacity .2s}
 .ov.open{opacity:1;pointer-events:all}
@@ -183,8 +217,8 @@ tbody tr.done-row td{opacity:.55}
 /* PANEL DONE SECTION */
 .done-section{background:#F0FDF4;border:1px solid #BBF7D0;border-radius:10px;padding:12px 14px}
 .done-section-title{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#15803D;margin-bottom:10px}
-.done-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
-.done-row:last-child{margin-bottom:0}
+.done-section .done-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.done-section .done-row:last-child{margin-bottom:0}
 .done-label{font-size:12px;color:var(--text)}
 .btn-mark{padding:4px 12px;border-radius:var(--r);font-size:11px;font-weight:700;cursor:pointer;border:none;font-family:var(--font);transition:.15s}
 .btn-mark-do{background:var(--yellow);color:var(--black)}.btn-mark-do:hover{background:#ecc000}
@@ -213,9 +247,112 @@ tbody tr.done-row td{opacity:.55}
   .main{padding:14px}.filters{padding:9px 14px}
   .panel{width:100%}.stats-grid{grid-template-columns:1fr 1fr}
 }
+
+/* WEEK NAV */
+.week-nav{background:var(--card);border-bottom:1px solid var(--border);padding:8px 28px;display:flex;align-items:center;gap:8px}
+.wn-btn{background:none;border:1px solid var(--border);border-radius:var(--r);padding:5px 12px;font-size:12px;font-weight:600;cursor:pointer;font-family:var(--font);color:var(--text);transition:.15s}
+.wn-btn:hover{background:var(--black);color:#fff;border-color:var(--black)}
+.wn-label{font-size:12px;font-weight:600;color:var(--text);min-width:220px;text-align:center;padding:0 4px}
+.wn-today{background:var(--yellow);color:var(--black);border:none;border-radius:var(--r);padding:5px 12px;font-size:11px;font-weight:700;cursor:pointer;font-family:var(--font);transition:.15s}
+.wn-today:hover{background:#ecc000}
+
+/* PASTE BAR */
+.paste-bar{position:fixed;bottom:0;left:0;right:0;background:var(--black);color:#fff;padding:11px 28px;display:flex;align-items:center;justify-content:space-between;gap:16px;z-index:500;transform:translateY(100%);transition:transform .3s cubic-bezier(.4,0,.2,1)}
+.paste-bar.show{transform:translateY(0)}
+.paste-bar-msg{font-size:13px;display:flex;align-items:center;gap:10px}
+.paste-bar-key{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);border-radius:5px;padding:2px 8px;font-size:12px;font-weight:700;font-family:monospace}
+.paste-bar-close{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);color:#fff;border-radius:6px;padding:5px 14px;font-size:12px;font-weight:600;cursor:pointer;font-family:var(--font);white-space:nowrap}
+.paste-bar-close:hover{background:rgba(255,255,255,.22)}
+
+/* BRIEFING MODAL */
+.bov{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:400;display:none;align-items:center;justify-content:center}
+.bov.open{display:flex}
+.bmodal{background:#fff;border-radius:16px;width:560px;max-width:95vw;max-height:90vh;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 24px 80px rgba(0,0,0,.28)}
+.bm-head{padding:20px 24px 16px;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-shrink:0}
+.bm-head-title{font-size:15px;font-weight:700}
+.bm-head-sub{font-size:11px;color:var(--muted);margin-top:3px}
+.bm-body{padding:20px 24px;overflow-y:auto;flex:1;display:flex;flex-direction:column;gap:16px}
+.bm-steps{display:flex;flex-direction:column;gap:8px}
+.bm-step{display:flex;align-items:flex-start;gap:12px;padding:12px 14px;border-radius:10px;background:var(--bg);border:1px solid var(--border);transition:.2s}
+.bm-step.done{background:#F0FDF4;border-color:#BBF7D0}
+.bm-step.bm-active{border-color:var(--black)}
+.bm-step-n{width:24px;height:24px;border-radius:50%;background:#D1D5DB;color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;transition:.2s}
+.bm-step.done .bm-step-n{background:var(--green)}
+.bm-step.bm-active .bm-step-n{background:var(--black)}
+.bm-step-txt{flex:1}
+.bm-step-label{font-size:12px;font-weight:600;color:var(--text)}
+.bm-step.done .bm-step-label{color:#15803D}
+.bm-step-desc{font-size:11px;color:var(--muted);margin-top:2px;line-height:1.5}
+.bm-preview{background:var(--bg);border:1px solid var(--border);border-radius:10px;overflow:hidden;flex-shrink:0}
+.bm-preview-head{padding:8px 12px;border-bottom:1px solid var(--border);background:#fff;font-size:10px;font-weight:700;color:var(--faint);letter-spacing:.07em;text-transform:uppercase}
+.bm-preview-body{padding:12px;font-size:11px;line-height:1.75;color:var(--text)}
+.bm-preview-body a{color:var(--blue);text-decoration:underline}
+.bm-preview-body .link-miss{color:var(--red);font-style:italic}
+.bm-foot{padding:14px 24px;border-top:1px solid var(--border);display:flex;gap:8px;justify-content:flex-end;flex-shrink:0}
 </style>
 </head>
 <body>
+
+<!-- PASTE BAR -->
+<div class="paste-bar" id="pasteBar">
+  <div class="paste-bar-msg">
+    <span>✓ Gmail abierto · Haz clic en el cuerpo del email y pega con</span>
+    <span class="paste-bar-key">⌘ V</span>
+    <span>— "este enlace" aparecerá como hipervínculo</span>
+  </div>
+  <button class="paste-bar-close" onclick="hidePasteBar()">Ya pegado ✓</button>
+</div>
+
+<!-- BRIEFING MODAL -->
+<div class="bov" id="bov" onclick="if(event.target===this)closeBriefingModal()">
+  <div class="bmodal">
+    <div class="bm-head">
+      <div>
+        <div class="bm-head-title">Enviar Briefing</div>
+        <div class="bm-head-sub" id="bm-sub">—</div>
+      </div>
+      <button class="btn-close" onclick="closeBriefingModal()">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="bm-body">
+      <div class="bm-steps">
+        <div class="bm-step done" id="bm-s1">
+          <div class="bm-step-n" id="bm-s1n">✓</div>
+          <div class="bm-step-txt">
+            <div class="bm-step-label">Email copiado al portapapeles</div>
+            <div class="bm-step-desc">El email con "este enlace" clicable está listo para pegar en Gmail.</div>
+          </div>
+        </div>
+        <div class="bm-step bm-active" id="bm-s2">
+          <div class="bm-step-n">2</div>
+          <div class="bm-step-txt">
+            <div class="bm-step-label">Abre Gmail</div>
+            <div class="bm-step-desc">Se abrirá Gmail con el destinatario y el asunto ya rellenos. El cuerpo estará vacío.</div>
+          </div>
+        </div>
+        <div class="bm-step" id="bm-s3">
+          <div class="bm-step-n">3</div>
+          <div class="bm-step-txt">
+            <div class="bm-step-label">Pega el email en Gmail con Cmd+V</div>
+            <div class="bm-step-desc">Haz clic en el cuerpo del email en Gmail y pega con Cmd+V. "Este enlace" aparecerá como hipervínculo clicable.</div>
+          </div>
+        </div>
+      </div>
+      <div class="bm-preview">
+        <div class="bm-preview-head">Vista previa del email</div>
+        <div class="bm-preview-body" id="bm-preview-body"></div>
+      </div>
+    </div>
+    <div class="bm-foot">
+      <button class="btn btn-k" onclick="closeBriefingModal()">Cancelar</button>
+      <button class="btn btn-y" id="bm-btn-gmail" onclick="bmOpenGmail()">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        Abrir Gmail
+      </button>
+    </div>
+  </div>
+</div>
 
 <div class="toast" id="toast"></div>
 
@@ -251,10 +388,19 @@ tbody tr.done-row td{opacity:.55}
   <button class="tab" id="tab-todas" onclick="switchTab('todas')">
     Todas las colaboraciones <span class="tab-badge" id="tb-todas">0</span>
   </button>
+  <button class="tab" id="tab-comp" onclick="switchTab('comp')">
+    📊 Comparativa 2025
+  </button>
 </div>
 
 <!-- ═══════════ PENDIENTES VIEW ═══════════ -->
 <div class="view active" id="view-pendientes">
+  <div class="week-nav">
+    <button class="wn-btn" onclick="changeWeek(-1)">← Semana anterior</button>
+    <span class="wn-label" id="wn-label">—</span>
+    <button class="wn-btn" onclick="changeWeek(1)">Semana siguiente →</button>
+    <button class="wn-today" id="wn-today" onclick="changeWeek(0,true)" style="display:none">Volver a hoy</button>
+  </div>
   <div class="filters" id="filters-pend">
     <div class="fi wide">
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
@@ -400,6 +546,37 @@ tbody tr.done-row td{opacity:.55}
   </div>
 </div>
 
+<!-- ═══════════ COMPARATIVA VIEW ═══════════ -->
+<div class="view" id="view-comp">
+  <div class="comp-wrap">
+    <!-- summary cards -->
+    <div class="stats-grid" id="comp-cards"></div>
+    <!-- week navigator -->
+    <div class="comp-section">
+      <div class="comp-section-hd">
+        <div class="bars-title">Comparativa por semana</div>
+        <div class="comp-week-nav">
+          <button class="wn-btn" onclick="compWeekShift(-1)">← Anterior</button>
+          <span id="comp-wn-label" class="wn-label">—</span>
+          <button class="wn-btn" onclick="compWeekShift(1)">Siguiente →</button>
+          <button class="wn-btn" onclick="compWeekShift(0,true)" id="comp-wn-today">Semana actual</button>
+        </div>
+      </div>
+      <div id="comp-week-cards" class="comp-week-cards"></div>
+    </div>
+    <!-- camping ranking -->
+    <div class="comp-section">
+      <div class="bars-title" style="margin-bottom:14px">Colaboraciones por camping</div>
+      <div id="comp-camps"></div>
+    </div>
+    <!-- monthly overview -->
+    <div class="comp-section">
+      <div class="bars-title" style="margin-bottom:14px">Evolución mensual</div>
+      <div id="comp-months"></div>
+    </div>
+  </div>
+</div>
+
 <!-- FOOTER -->
 <div class="footer">
   <div class="fdot"></div>
@@ -438,7 +615,7 @@ tbody tr.done-row td{opacity:.55}
 // ═══════════════════════════════════════════════════════════════
 // CONFIG
 // ═══════════════════════════════════════════════════════════════
-const SHEET_ID = '1APiLKksNfNM9EFv92NJfPt0mxHGM5t59';
+const SHEET_ID = '156r9urplHxQI9bHSaln3cmzsMGudTpJ954lNIQi7vww';
 
 // ═══════════════════════════════════════════════════════════════
 // STATE
@@ -450,6 +627,7 @@ const S = {
   notionLinks: {}, // localStorage overrides
   sent: {},        // { id: { b: bool, c: bool } } — briefing / camping sent
   loadTime: null,
+  data2025: [],   // raw 2025 rows
 };
 
 // Status config
@@ -478,7 +656,7 @@ function init() {
 // FETCH GOOGLE SHEETS
 // ═══════════════════════════════════════════════════════════════
 async function fetchSheet(name) {
-  const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(name)}&headers=1`;
+  const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(name)}&headers=1&t=${Date.now()}`;
   const res = await fetch(url);
   const text = await res.text();
   const m = text.match(/google\.visualization\.Query\.setResponse\(([\s\S]*?)\);\s*$/);
@@ -530,10 +708,11 @@ async function loadData() {
   showLoading(true);
 
   try {
-    const [tBBDD, tColab, tCamp] = await Promise.all([
+    const [tBBDD, tColab, tCamp, t2025] = await Promise.all([
       fetchSheet('BBDD 2026'),
       fetchSheet('Colaboradores 2026'),
       fetchSheet('Campings'),
+      fetchSheet('BBDD 2025'),
     ]);
 
     // Parse campings
@@ -541,7 +720,9 @@ async function loadData() {
     tableToRows(tCamp).forEach(r => {
       const nombre = cleanStr(r[0]);
       if (!nombre) return;
-      campings.push({ nombre, email: cleanStr(r[3]) });
+      // Multiple emails in one cell (separated by newline) → join with comma
+      const rawEmail = cleanStr(r[3]).replace(/[\r\n]+/g, ',').replace(/,\s*,/g, ',').replace(/,$/,'');
+      campings.push({ nombre, email: rawEmail });
     });
     S.campings = campings;
 
@@ -549,12 +730,11 @@ async function loadData() {
     const influencers = [];
     let counter = 1;
 
-    const parseRows = (rows, fuente) => {
+    const parseRows = (rows, fuente, nuevaIdx) => {
       rows.forEach(r => {
         if (cleanStr(r[4]) !== 'Completada') return;
         const u = cleanStr(r[0]);
         if (!u) return;
-        // Only 2026 — check fecha visita year
         const fecha = parseFecha(r[6]);
         const year = fecha ? fecha.split('/')[2] : null;
         if (year && year !== '2026') return;
@@ -567,14 +747,33 @@ async function loadData() {
           destino:  cleanStr(r[7]),
           email:    cleanStr(r[8]),
           tipologia:cleanStr(r[9]),
-          linkSheet: cleanStr(r[10]), // col K — Link Notion from sheet
+          linkSheet:   cleanStr(r[10]),
+          localizador: cleanStr(r[11]),
+          nueva: cleanStr(r[nuevaIdx] || ''),
           fuente,
         });
       });
     };
 
-    parseRows(tableToRows(tBBDD), 'BBDD 2026');
-    parseRows(tableToRows(tColab), 'Colaboradores 2026');
+    parseRows(tableToRows(tBBDD), 'BBDD 2026', 12);   // col M
+    parseRows(tableToRows(tColab), 'Colaboradores 2026', 11); // col L
+
+    // Parse 2025 data
+    S.data2025 = [];
+    tableToRows(t2025).forEach(r => {
+      if (cleanStr(r[4]) !== 'Completada') return;
+      const u = cleanStr(r[0]);
+      if (!u) return;
+      const fecha = parseFecha(r[6]);
+      const year = fecha ? fecha.split('/')[2] : null;
+      if (year && year !== '2025') return;
+      S.data2025.push({
+        username: u.startsWith('@') ? u : `@${u}`,
+        fecha,
+        destino: cleanStr(r[7]),
+        nueva: cleanStr(r[8]), // col I
+      });
+    });
 
     // Enrich
     S.all = influencers.map(r => enrich(r));
@@ -604,7 +803,7 @@ function enrich(r) {
   const emailCamping = campMatch?.email || null;
   const estado = computeEstado(r.email, link, campMatch, emailCamping);
   const sent = S.sent[r.id] || {b: false, c: false};
-  const isDone = sent.b && (sent.c || !emailCamping);
+  const isDone = sent.b && (sent.c || !campMatch);
   return { ...r, link, campMatch, emailCamping, estado, sent, isDone };
 }
 
@@ -612,8 +811,241 @@ function enrich(r) {
 // CAMPING MATCH — handles "Kampaoh " prefix
 // ═══════════════════════════════════════════════════════════════
 function norm(s) {
-  return String(s||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/\s+/g,' ').trim();
+  return String(s||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/['''´]/g,' ').replace(/\s+/g,' ').trim();
 }
+
+// ═══════════════════════════════════════════════════════════════
+// WEEK NAVIGATION (Pendientes)
+// ═══════════════════════════════════════════════════════════════
+let weekOffset = 0;
+
+function getWeekRange(offset) {
+  const today = new Date();
+  const dow   = today.getDay();
+  const diff  = dow === 0 ? -6 : 1 - dow; // days back to Monday
+  const mon   = new Date(today);
+  mon.setDate(today.getDate() + diff + offset * 7);
+  mon.setHours(0,0,0,0);
+  const sun = new Date(mon);
+  sun.setDate(mon.getDate() + 6);
+  sun.setHours(23,59,59,999);
+  return { start: mon, end: sun };
+}
+
+function inWeekRange(fecha) {
+  if (!fecha) return false;
+  const [d,m,y] = fecha.split('/').map(Number);
+  if (!d||!m||!y) return false;
+  const date = new Date(y, m-1, d);
+  const { start, end } = getWeekRange(weekOffset);
+  return date >= start && date <= end;
+}
+
+function weekNavLabel() {
+  const { start, end } = getWeekRange(weekOffset);
+  const meses = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+  const fmt = d => `${d.getDate()} ${meses[d.getMonth()]}`;
+  if (weekOffset === 0) return `Esta semana · ${fmt(start)} – ${fmt(end)}`;
+  if (weekOffset === -1) return `Semana pasada · ${fmt(start)} – ${fmt(end)}`;
+  return `${fmt(start)} – ${fmt(end)}`;
+}
+
+function changeWeek(delta, reset) {
+  weekOffset = reset ? 0 : weekOffset + delta;
+  const lbl = document.getElementById('wn-label');
+  const btn = document.getElementById('wn-today');
+  if (lbl) lbl.textContent = weekNavLabel();
+  if (btn) btn.style.display = weekOffset === 0 ? 'none' : '';
+  renderPendientes();
+}
+// ═══════════════════════════════════════════════════════════════
+// COMPARATIVA 2025 vs 2026
+// ═══════════════════════════════════════════════════════════════
+let compWeekOffset = 0;
+
+function getISOWeek(date) {
+  const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+  const day = d.getUTCDay() || 7;
+  d.setUTCDate(d.getUTCDate() + 4 - day);
+  const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+  return Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
+}
+
+function parseDDMMYYYY(s) {
+  if (!s) return null;
+  const [d, m, y] = s.split('/');
+  if (!d || !m || !y) return null;
+  return new Date(parseInt(y), parseInt(m) - 1, parseInt(d));
+}
+
+function getWeekStartEnd(year, isoWeek) {
+  const jan4 = new Date(year, 0, 4);
+  const startOfWeek1 = new Date(jan4);
+  startOfWeek1.setDate(jan4.getDate() - ((jan4.getDay() || 7) - 1));
+  const start = new Date(startOfWeek1);
+  start.setDate(start.getDate() + (isoWeek - 1) * 7);
+  const end = new Date(start);
+  end.setDate(start.getDate() + 6);
+  return { start, end };
+}
+
+function compWeekShift(delta, reset) {
+  compWeekOffset = reset ? 0 : compWeekOffset + delta;
+  renderComparativa();
+}
+
+function renderComparativa() {
+  const all26 = S.all;
+  const all25 = S.data2025;
+  if (!all26 || !all25) return;
+
+  // Summary totals
+  const total26 = all26.length;
+  const total25 = all25.length;
+  const nuevas26 = all26.filter(i => !i.nueva || i.nueva.trim() === '').length;
+  const nuevas25 = all25.filter(i => !i.nueva || i.nueva.trim() === '').length;
+  const diff = total26 - total25;
+  const diffSign = diff > 0 ? '+' : '';
+  const pct = total25 > 0 ? Math.round((diff / total25) * 100) : 0;
+
+  document.getElementById('comp-cards').innerHTML = `
+    <div class="stat-card accent">
+      <div class="stat-label">Total 2026</div>
+      <div class="stat-value">${total26}</div>
+      <div class="stat-sub">colaboraciones completadas</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Total 2025</div>
+      <div class="stat-value">${total25}</div>
+      <div class="stat-sub">colaboraciones completadas</div>
+    </div>
+    <div class="stat-card ${diff >= 0 ? 'green' : 'orange'}">
+      <div class="stat-label">Diferencia</div>
+      <div class="stat-value">${diffSign}${diff}</div>
+      <div class="stat-sub">${diffSign}${pct}% vs 2025</div>
+    </div>
+    <div class="stat-card blue">
+      <div class="stat-label">Nuevos perfiles 2026</div>
+      <div class="stat-value">${nuevas26}</div>
+      <div class="stat-sub">vs ${nuevas25} nuevos en 2025</div>
+    </div>
+  `;
+
+  // Week comparison
+  const today = new Date();
+  const curWeek = getISOWeek(today) + compWeekOffset;
+  const targetWeek = curWeek < 1 ? 1 : curWeek;
+  const w26 = getWeekStartEnd(2026, targetWeek);
+  const w25 = getWeekStartEnd(2025, targetWeek);
+
+  const count26w = all26.filter(i => {
+    const d = parseDDMMYYYY(i.fecha);
+    return d && d >= w26.start && d <= w26.end;
+  }).length;
+  const count25w = all25.filter(i => {
+    const d = parseDDMMYYYY(i.fecha);
+    return d && d >= w25.start && d <= w25.end;
+  }).length;
+  const weekDiff = count26w - count25w;
+  const weekSign = weekDiff > 0 ? '+' : '';
+  const meses = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+  const fmtD = d => `${d.getDate()} ${meses[d.getMonth()]}`;
+  document.getElementById('comp-wn-label').textContent =
+    `Semana ${targetWeek} · 2026: ${fmtD(w26.start)}–${fmtD(w26.end)} · 2025: ${fmtD(w25.start)}–${fmtD(w25.end)}`;
+
+  document.getElementById('comp-week-cards').innerHTML = `
+    <div class="comp-wcard">
+      <div class="cwc-label">Semana ${targetWeek} · 2026</div>
+      <div class="cwc-val">${count26w}</div>
+      <div class="cwc-sub">colaboraciones</div>
+    </div>
+    <div class="comp-wcard">
+      <div class="cwc-label">Semana ${targetWeek} · 2025</div>
+      <div class="cwc-val">${count25w}</div>
+      <div class="cwc-sub">colaboraciones</div>
+    </div>
+    <div class="comp-wcard ${weekDiff > 0 ? 'pos' : weekDiff < 0 ? 'neg' : 'neutral'}">
+      <div class="cwc-label">Diferencia</div>
+      <div class="cwc-val">${weekSign}${weekDiff}</div>
+      <div class="cwc-sub">vs misma semana 2025</div>
+    </div>
+  `;
+
+  // Camping ranking
+  const campCount = (arr) => {
+    const m = {};
+    arr.forEach(i => {
+      const k = i.destino || 'Sin destino';
+      m[k] = (m[k] || 0) + 1;
+    });
+    return m;
+  };
+  const c26 = campCount(all26);
+  const c25 = campCount(all25);
+  const allCamps = [...new Set([...Object.keys(c26), ...Object.keys(c25)])];
+  allCamps.sort((a, b) => ((c26[b] || 0) + (c25[b] || 0)) - ((c26[a] || 0) + (c25[a] || 0)));
+  const maxVal = Math.max(...allCamps.map(c => Math.max(c26[c] || 0, c25[c] || 0)), 1);
+
+  document.getElementById('comp-camps').innerHTML =
+    `<div class="comp-legend">
+      <span><span class="comp-leg-dot" style="background:var(--black)"></span>2026</span>
+      <span><span class="comp-leg-dot" style="background:var(--wgray)"></span>2025</span>
+    </div>` +
+    allCamps.slice(0, 12).map(camp => {
+      const n26 = c26[camp] || 0;
+      const n25 = c25[camp] || 0;
+      const pct26 = Math.round((n26 / maxVal) * 100);
+      const pct25 = Math.round((n25 / maxVal) * 100);
+      const d = n26 - n25;
+      const ds = d > 0 ? `<span style="color:var(--green)">+${d}</span>` : d < 0 ? `<span style="color:var(--red)">${d}</span>` : `<span style="color:var(--faint)">—</span>`;
+      return `<div class="comp-bar-row">
+        <div class="cbl" title="${camp}">${camp}</div>
+        <div class="comp-bar-track"><div class="comp-bar-fill26" style="width:${pct26}%"></div></div>
+        <div class="comp-bar-n">${n26}</div>
+        <div class="comp-bar-track"><div class="comp-bar-fill25" style="width:${pct25}%"></div></div>
+        <div class="comp-bar-n">${n25} ${ds}</div>
+      </div>`;
+    }).join('');
+
+  // Monthly overview
+  const byMonth = (arr, year) => {
+    const m = {};
+    arr.forEach(i => {
+      const d = parseDDMMYYYY(i.fecha);
+      if (!d) return;
+      const key = d.getMonth();
+      m[key] = (m[key] || 0) + 1;
+    });
+    return m;
+  };
+  const m26 = byMonth(all26, 2026);
+  const m25 = byMonth(all25, 2025);
+  const mnames = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+  const maxM = Math.max(...[0,1,2,3,4,5,6,7,8,9,10,11].map(i => Math.max(m26[i]||0, m25[i]||0)), 1);
+
+  document.getElementById('comp-months').innerHTML =
+    `<div class="comp-legend">
+      <span><span class="comp-leg-dot" style="background:var(--black)"></span>2026</span>
+      <span><span class="comp-leg-dot" style="background:var(--wgray)"></span>2025</span>
+    </div>` +
+    [0,1,2,3,4,5,6,7,8,9,10,11].filter(i => (m26[i]||0) + (m25[i]||0) > 0).map(i => {
+      const n26 = m26[i] || 0;
+      const n25 = m25[i] || 0;
+      const p26 = Math.round((n26 / maxM) * 100);
+      const p25 = Math.round((n25 / maxM) * 100);
+      const d = n26 - n25;
+      const ds = d > 0 ? `<span style="color:var(--green)">+${d}</span>` : d < 0 ? `<span style="color:var(--red)">${d}</span>` : `<span style="color:var(--faint)">—</span>`;
+      return `<div class="comp-month-row">
+        <div style="font-size:12px;font-weight:500">${mnames[i]}</div>
+        <div class="comp-bar-track"><div class="comp-bar-fill26" style="width:${p26}%"></div></div>
+        <div class="comp-bar-n">${n26}</div>
+        <div class="comp-bar-track"><div class="comp-bar-fill25" style="width:${p25}%"></div></div>
+        <div class="comp-bar-n">${n25}</div>
+        <div style="font-size:11px;text-align:right">${ds}</div>
+      </div>`;
+    }).join('') || '<p style="color:var(--faint);font-size:12px">Sin datos mensuales</p>';
+}
+
 function stripKampaoh(s) { return s.replace(/^kampaoh\s+/i, ''); }
 
 function matchCamping(destino, campings) {
@@ -658,8 +1090,11 @@ function switchTab(tab) {
   currentTab = tab;
   document.getElementById('view-pendientes').classList.toggle('active', tab==='pendientes');
   document.getElementById('view-todas').classList.toggle('active', tab==='todas');
+  document.getElementById('view-comp').classList.toggle('active', tab==='comp');
   document.getElementById('tab-pend').classList.toggle('active', tab==='pendientes');
   document.getElementById('tab-todas').classList.toggle('active', tab==='todas');
+  document.getElementById('tab-comp').classList.toggle('active', tab==='comp');
+  if (tab === 'comp') renderComparativa();
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -675,6 +1110,10 @@ function renderAll() {
 // RENDER PENDIENTES
 // ═══════════════════════════════════════════════════════════════
 function renderPendientes() {
+  // Keep week label in sync
+  const lbl = document.getElementById('wn-label');
+  if (lbl && !lbl.textContent.includes('–')) lbl.textContent = weekNavLabel();
+
   const q    = norm(val('fp-search'));
   const dest = val('fp-dest');
   const est  = val('fp-estado');
@@ -682,6 +1121,7 @@ function renderPendientes() {
 
   let data = S.all.filter(i => {
     if (!isTrulyPending(i)) return false;
+    if (!inWeekRange(i.fecha)) return false;
     if (q && !norm(i.username).includes(q) && !norm(i.nombre).includes(q)) return false;
     if (dest && i.destino !== dest) return false;
     if (est && i.estado !== est) return false;
@@ -784,7 +1224,11 @@ function rowHtml(i, isPendView) {
           ? (cSent
               ? `<span class="sent-indicator">✓ Camp.</span>`
               : `<button class="btn btn-k" onclick="doCamping('${i.id}')">⛺</button>`)
-          : `<button class="btn btn-k" disabled title="Camping sin email">⛺</button>`
+          : (i.campMatch && !i.emailCamping)
+            ? (cSent
+                ? `<span class="sent-indicator">✓ Slack</span>`
+                : `<button class="btn btn-k" onclick="doSlack('${i.id}')" title="Copiar mensaje para Slack"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></button>`)
+            : `<button class="btn btn-k" disabled title="Camping no identificado">⛺</button>`
         }
         <button class="btn btn-ghost" onclick="openPanel('${i.id}')">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
@@ -794,15 +1238,24 @@ function rowHtml(i, isPendView) {
   </tr>`;
 }
 
+const SVG_MAIL  = `<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>`;
+const SVG_CROSS = `<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>`;
+const SVG_WARN  = `<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>`;
+
 function emailCell(email) {
   return email
-    ? `<div class="ei ei-ok"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>${h(email)}</div>`
-    : `<div class="ei ei-no"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>Sin email</div>`;
+    ? `<div class="ei ei-ok">${SVG_MAIL}<span class="ei-txt" title="${h(email)}">${h(email)}</span></div>`
+    : `<div class="ei ei-no">${SVG_CROSS}<span>Sin email</span></div>`;
 }
 function campEmailCell(i) {
-  if (i.emailCamping) return `<div class="ei ei-ok"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>${h(i.emailCamping)}</div>`;
-  if (i.campMatch) return `<div class="ei ei-no"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>Sin email</div>`;
-  return `<div class="ei ei-warn"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>No identificado</div>`;
+  if (i.emailCamping) {
+    // May contain multiple emails (comma-separated) — show first + count
+    const parts = i.emailCamping.split(',').map(s=>s.trim()).filter(Boolean);
+    const label = parts[0] + (parts.length > 1 ? ` +${parts.length-1}` : '');
+    return `<div class="ei ei-ok">${SVG_MAIL}<span class="ei-txt" title="${h(i.emailCamping)}">${h(label)}</span></div>`;
+  }
+  if (i.campMatch) return `<div class="ei ei-no">${SVG_CROSS}<span>Sin email · Slack</span></div>`;
+  return `<div class="ei ei-warn">${SVG_WARN}<span>No identificado</span></div>`;
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -874,14 +1327,26 @@ function openPanel(id) {
   document.getElementById('p-title').textContent = i.username;
   document.getElementById('p-sub').textContent   = [i.nombre,i.tipologia,i.destino].filter(Boolean).join(' · ');
   buildPanel(i);
-  const canB = !!(i.email && i.link);
-  const canC = !!i.emailCamping;
+  const canB     = !!(i.email && i.link);
+  const canC     = !!i.emailCamping;
+  const hasSlack = !!(i.campMatch && !i.emailCamping);
   const btnB = document.getElementById('btn-b');
   const btnC = document.getElementById('btn-c');
   btnB.disabled = !canB;
   btnB.onclick  = () => doBriefing(id);
-  btnC.disabled = !canC;
-  btnC.onclick  = () => doCamping(id);
+  if (canC) {
+    btnC.disabled = false;
+    btnC.innerHTML = '⛺ Mail Camping';
+    btnC.onclick   = () => doCamping(id);
+  } else if (hasSlack) {
+    btnC.disabled = false;
+    btnC.innerHTML = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right:4px"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Copiar para Slack';
+    btnC.onclick   = () => doSlack(id);
+  } else {
+    btnC.disabled = true;
+    btnC.innerHTML = '⛺ Mail Camping';
+    btnC.onclick   = null;
+  }
   document.getElementById('ov').classList.add('open');
   document.getElementById('panel').classList.add('open');
 }
@@ -935,13 +1400,22 @@ function buildPanel(i) {
         }
       </div>
       <div class="done-row">
-        <span class="done-label">⛺ Mail al camping</span>
-        ${!i.emailCamping
-          ? `<span style="font-size:11px;color:var(--faint)">Sin email de camping</span>`
-          : i.sent.c
+        ${i.emailCamping ? `
+          <span class="done-label">⛺ Mail al camping</span>
+          ${i.sent.c
             ? `<button class="btn-mark btn-mark-undo" onclick="toggleSent('${i.id}','c',false)">✓ Enviado · Desmarcar</button>`
             : `<button class="btn-mark btn-mark-do" onclick="toggleSent('${i.id}','c',true)">Marcar como enviado</button>`
-        }
+          }
+        ` : i.campMatch ? `
+          <span class="done-label">💬 Aviso Slack al camping</span>
+          ${i.sent.c
+            ? `<button class="btn-mark btn-mark-undo" onclick="toggleSent('${i.id}','c',false)">✓ Enviado · Desmarcar</button>`
+            : `<button class="btn-mark btn-mark-do" onclick="toggleSent('${i.id}','c',true)">Marcar como enviado</button>`
+          }
+        ` : `
+          <span class="done-label">⛺ Camping no identificado</span>
+          <span style="font-size:11px;color:var(--faint)">Sin acción disponible</span>
+        `}
       </div>
     </div>
 
@@ -953,7 +1427,7 @@ function buildPanel(i) {
             <div class="ep-subj">Colaboración Kampaoh ${h(i.destino)} ⛺</div>
             <div class="ep-to">Para: ${i.email?h(i.email):'<span style="color:var(--red)">sin email</span>'}</div>
           </div>
-          <button class="btn-copy" onclick="copyText(briefingPlain('${i.id}'))">
+          <button class="btn-copy" onclick="copyText('${i.id}')">
             <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
             Copiar
           </button>
@@ -970,12 +1444,12 @@ function buildPanel(i) {
             <div class="ep-subj">Colaboración Kampaoh ${h(i.destino)} ⛺</div>
             <div class="ep-to">Para: ${i.emailCamping?h(i.emailCamping):'<span style="color:var(--red)">sin email de camping</span>'}</div>
           </div>
-          <button class="btn-copy" ${i.emailCamping?'':'disabled'} onclick="copyText(campingPlain())">
+          <button class="btn-copy" ${i.emailCamping?'':'disabled'} onclick="copyCampingText('${i.id}')">
             <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
             Copiar
           </button>
         </div>
-        <div class="ep-body">${campingHtml()}</div>
+        <div class="ep-body">${campingHtml(i)}</div>
       </div>
     </div>
   `;
@@ -1027,44 +1501,183 @@ function toggleSent(id, key, value) {
 }
 
 // ═══════════════════════════════════════════════════════════════
+// DATE FORMAT
+// ═══════════════════════════════════════════════════════════════
+function fechaHumana(fecha) {
+  if (!fecha) return '';
+  const [d, m, y] = fecha.split('/').map(Number);
+  if (!d || !m || !y) return fecha;
+  const date = new Date(y, m - 1, d);
+  const dias  = ['domingo','lunes','martes','miércoles','jueves','viernes','sábado'];
+  const meses = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+  return `${dias[date.getDay()]} ${d} de ${meses[m - 1]}`;
+}
+
+// ═══════════════════════════════════════════════════════════════
 // EMAILS
 // ═══════════════════════════════════════════════════════════════
-function briefingHtml(i) {
-  const nombre = h(i.nombre||i.username);
+function briefingBodyHtml(i) {
+  const nombre = h(i.nombre || i.username);
   const dest   = h(i.destino);
+  const fecha  = h(fechaHumana(i.fecha));
+  const tipo   = h(i.tipologia);
+  const linkEl = i.link
+    ? `<a href="${h(i.link)}" target="_blank" style="color:#2563EB">este enlace</a>`
+    : `<span style="color:#DC2626;font-style:italic">[link Notion pendiente]</span>`;
+  const p = (txt) => `<p style="margin:0 0 18px 0;padding:0;line-height:1.6">${txt}</p>`;
+  return p(`Buenos días, ${nombre}:`)
+    + p(`Soy Andrea, del departamento de marketing de Kampaoh. ¡Se va acercando la fecha de vuestra llegada a ${dest}! Como sabéis, tenéis una reserva para el ${fecha} en Kampaoh en nuestra ${tipo}.`)
+    + p(`Comparto contigo en ${linkEl} los aspectos a tener en cuenta acerca de nuestra colaboración. Solo tienes que hacer clic sobre los triángulos para desplegar la información. Si después de revisarlo tienes alguna duda, me dices sin problema.`)
+    + p(`Estoy a vuestra disposición para lo que necesitéis. Espero que disfrutéis mucho en Kampaoh ${dest} ⛺❤`);
+}
+
+// Preview inside the panel (renders as HTML with link visible)
+function briefingHtml(i) {
+  const nombre = h(i.nombre || i.username);
+  const dest   = h(i.destino);
+  const fecha  = h(fechaHumana(i.fecha));
+  const tipo   = h(i.tipologia);
   const linkEl = i.link
     ? `<a href="${h(i.link)}" target="_blank">este enlace</a>`
     : `<span class="link-miss">[link Notion pendiente]</span>`;
-  return `Buenos días, ${nombre}:<br><br>Soy Andrea, del departamento de marketing de Kampaoh. ¡Se va acercando la fecha de vuestra llegada a ${dest}! Como sabéis, tenéis una reserva para el ${h(i.fecha)} en Kampaoh en nuestra ${h(i.tipologia)}.<br><br>Comparto contigo en ${linkEl} los aspectos a tener en cuenta acerca de nuestra colaboración. Solo tienes que hacer clic sobre los triángulos para desplegar la información. Si después de revisarlo tienes alguna duda, me dices sin problema.<br><br>Estoy a vuestra disposición para lo que necesitéis. Espero que disfrutéis mucho en Kampaoh ${dest} ⛺❤<br><br>Un abrazo,<br>Andrea<br>Kampaoh · Departamento de Marketing`;
+  return `Buenos días, ${nombre}:<br><br>Soy Andrea, del departamento de marketing de Kampaoh. ¡Se va acercando la fecha de vuestra llegada a ${dest}! Como sabéis, tenéis una reserva para el ${fecha} en Kampaoh en nuestra ${tipo}.<br><br>Comparto contigo en ${linkEl} los aspectos a tener en cuenta acerca de nuestra colaboración. Solo tienes que hacer clic sobre los triángulos para desplegar la información. Si después de revisarlo tienes alguna duda, me dices sin problema.<br><br>Estoy a vuestra disposición para lo que necesitéis. Espero que disfrutéis mucho en Kampaoh ${dest} ⛺❤`;
 }
-function campingHtml() {
-  return `Buenos días,<br><br>¿Qué tal? Os informo de que próximamente tenemos la entrada de esta influencer. Podéis consultar todos los datos de la reserva en el localizador.<br><br>Estoy a vuestra disposición para lo que necesitéis.<br><br>Un saludo,<br>Andrea<br>Kampaoh · Departamento de Marketing`;
+
+const CC = 'marisafelices@kampaoh.com,noemirodriguez@kampaoh.com';
+
+function campingBodyCore(i) {
+  const loc  = i?.localizador ? ` ${i.localizador}` : '';
+  const user = i?.username ? ` ${i.username}` : '';
+  return { loc, user,
+    text: `Buenos días,\n\n¿Qué tal? Os informo de que próximamente tenemos la entrada de esta influencer${user}. Podéis consultar todos los datos de la reserva en el localizador${loc}.\n\nEstoy a vuestra disposición para lo que necesitéis.`
+  };
 }
-function briefingPlain(id) {
-  const i = S.all.find(x=>x.id===id); if (!i) return '';
-  const nombre = i.nombre||i.username;
-  return `Buenos días, ${nombre}:\n\nSoy Andrea, del departamento de marketing de Kampaoh. ¡Se va acercando la fecha de vuestra llegada a ${i.destino}! Como sabéis, tenéis una reserva para el ${i.fecha} en Kampaoh en nuestra ${i.tipologia}.\n\nComparto contigo en este enlace (${i.link}) los aspectos a tener en cuenta acerca de nuestra colaboración. Solo tienes que hacer clic sobre los triángulos para desplegar la información. Si después de revisarlo tienes alguna duda, me dices sin problema.\n\nEstoy a vuestra disposición para lo que necesitéis. Espero que disfrutéis mucho en Kampaoh ${i.destino} ⛺❤\n\nUn abrazo,\nAndrea\nKampaoh · Departamento de Marketing`;
+
+// For Gmail URL — no sign-off (Gmail adds your signature automatically)
+function campingBodyGmail(i) { return campingBodyCore(i).text; }
+
+// For Slack copy — include sign-off (no auto-signature in Slack)
+function campingPlain(i) {
+  return campingBodyCore(i).text + `\n\nUn saludo,\nAndrea\nKampaoh · Departamento de Marketing`;
 }
-function campingPlain() {
-  return `Buenos días,\n\n¿Qué tal? Os informo de que próximamente tenemos la entrada de esta influencer. Podéis consultar todos los datos de la reserva en el localizador.\n\nEstoy a vuestra disposición para lo que necesitéis.\n\nUn saludo,\nAndrea\nKampaoh · Departamento de Marketing`;
+
+// Panel preview — show note about Gmail signature
+function campingHtml(i) {
+  const loc  = i?.localizador ? ` <strong>${h(i.localizador)}</strong>` : '';
+  const user = i?.username ? ` ${h(i.username)}` : '';
+  return `Buenos días,<br><br>¿Qué tal? Os informo de que próximamente tenemos la entrada de esta influencer${user}. Podéis consultar todos los datos de la reserva en el localizador${loc}.<br><br>Estoy a vuestra disposición para lo que necesitéis.<br><br><span style="color:var(--faint);font-size:10px;font-style:italic">[Tu firma de Gmail aparece aquí automáticamente]</span>`;
+}
+
+// Copy HTML to clipboard — uses execCommand (works on file://) with modern API as fallback
+function copyHtmlToClipboard(html) {
+  // Primary: contentEditable + execCommand — works on file:// and all browsers
+  try {
+    const el = document.createElement('div');
+    el.contentEditable = 'true';
+    el.innerHTML = html;
+    el.style.cssText = 'position:fixed;top:-9999px;left:-9999px;opacity:0;pointer-events:none;background:white;color:#111;font-family:Arial,sans-serif;font-size:14px';
+    document.body.appendChild(el);
+    const sel = window.getSelection();
+    const range = document.createRange();
+    range.selectNodeContents(el);
+    sel.removeAllRanges();
+    sel.addRange(range);
+    const ok = document.execCommand('copy');
+    sel.removeAllRanges();
+    document.body.removeChild(el);
+    if (ok) return true;
+  } catch(e) {}
+
+  // Fallback: modern Clipboard API (requires HTTPS/localhost)
+  try {
+    const htmlBlob = new Blob([html], { type: 'text/html' });
+    const textBlob = new Blob([html.replace(/<[^>]+>/g, '')], { type: 'text/plain' });
+    navigator.clipboard.write([new ClipboardItem({ 'text/html': htmlBlob, 'text/plain': textBlob })]);
+    return true;
+  } catch(e) {}
+  return false;
+}
+
+function briefingPlainBody(i) {
+  const nombre = i.nombre || i.username;
+  const fecha  = fechaHumana(i.fecha);
+  return `Buenos días, ${nombre}:\n\nSoy Andrea, del departamento de marketing de Kampaoh. ¡Se va acercando la fecha de vuestra llegada a ${i.destino}! Como sabéis, tenéis una reserva para el ${fecha} en Kampaoh en nuestra ${i.tipologia}.\n\nComparto contigo en este enlace los aspectos a tener en cuenta acerca de nuestra colaboración:\n${i.link}\n\nSolo tienes que hacer clic sobre los triángulos para desplegar la información. Si después de revisarlo tienes alguna duda, me dices sin problema.\n\nEstoy a vuestra disposición para lo que necesitéis. Espero que disfrutéis mucho en Kampaoh ${i.destino} ⛺❤\n\nUn abrazo,\nAndrea\nKampaoh · Departamento de Marketing`;
 }
 
 function doBriefing(id) {
-  const i = S.all.find(x=>x.id===id); if (!i) return;
-  if (!i.email) { toast('Sin email de influencer','error'); return; }
-  if (!i.link)  { toast('Añade el link de Notion antes de enviar','warning'); return; }
-  window.open(`mailto:${encodeURIComponent(i.email)}?subject=${encodeURIComponent(`Colaboración Kampaoh ${i.destino} ⛺`)}&body=${encodeURIComponent(briefingPlain(id))}`);
-  // Auto-mark briefing as sent
+  const i = S.all.find(x => x.id === id); if (!i) return;
+  if (!i.email) { toast('Sin email de influencer', 'error'); return; }
+  if (!i.link)  { toast('Añade el link de Notion antes de enviar', 'warning'); return; }
+
+  const subject = `Colaboración Kampaoh ${i.destino} ⛺`;
+  const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1`
+    + `&to=${encodeURIComponent(i.email)}`
+    + `&cc=${encodeURIComponent(CC)}`
+    + `&su=${encodeURIComponent(subject)}`;
+
+  // Copy HTML FIRST so user gesture is still active for clipboard
+  copyHtmlToClipboard(briefingBodyHtml(i));
+
+  // Then open Gmail
+  window.open(gmailUrl, '_blank');
+
+  showPasteBar();
   toggleSent(id, 'b', true);
 }
-function doCamping(id) {
-  const i = S.all.find(x=>x.id===id); if (!i) return;
-  if (!i.emailCamping) { toast('Camping sin email','error'); return; }
-  window.open(`mailto:${encodeURIComponent(i.emailCamping)}?subject=${encodeURIComponent(`Colaboración Kampaoh ${i.destino} ⛺`)}&body=${encodeURIComponent(campingPlain())}`);
-  // Auto-mark camping as sent
-  toggleSent(id, 'c', true);
+
+function copyPlainText(text) {
+  try {
+    const el = document.createElement('textarea');
+    el.value = text;
+    el.style.cssText = 'position:fixed;top:-9999px;left:-9999px;opacity:0';
+    document.body.appendChild(el);
+    el.select();
+    const ok = document.execCommand('copy');
+    document.body.removeChild(el);
+    return ok;
+  } catch(e) { return false; }
 }
-function copyText(t) { navigator.clipboard.writeText(t).then(()=>toast('✓ Copiado','success')).catch(()=>toast('No se pudo copiar','error')); }
+
+function doSlack(id) {
+  const i = S.all.find(x => x.id === id); if (!i) return;
+  const ok = copyPlainText(campingPlain(i));
+  if (ok) { toast('✓ Mensaje copiado · Pégalo en Slack', 'success'); toggleSent(id, 'c', true); }
+  else { toast('No se pudo copiar', 'error'); }
+}
+
+function doCamping(id) {
+  const i = S.all.find(x => x.id === id); if (!i) return;
+  if (!i.emailCamping) { toast('Camping sin email', 'error'); return; }
+  const subject = `Colaboración Kampaoh ${i.destino} ⛺`;
+  const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1`
+    + `&to=${encodeURIComponent(i.emailCamping)}`
+    + `&cc=${encodeURIComponent(CC)}`
+    + `&su=${encodeURIComponent(subject)}`
+    + `&body=${encodeURIComponent(campingBodyGmail(i))}`;
+  window.open(gmailUrl, '_blank');
+  toggleSent(id, 'c', true);
+  toast('✓ Gmail abierto con el email al camping listo para enviar', 'success');
+}
+
+function copyCampingText(id) {
+  const i = S.all.find(x => x.id === id); if (!i) return;
+  copyPlainText(campingPlain(i));
+  toast('✓ Copiado', 'success');
+}
+
+// "Copiar" button in panel — copies as HTML so pasting into Gmail keeps the link
+function copyText(idOrText) {
+  // If it's an influencer id, copy the HTML email body
+  const inf = S.all.find(x => x.id === idOrText);
+  if (inf) {
+    copyHtmlToClipboard(briefingBodyHtml(inf))
+      .then(() => toast('✓ Email HTML copiado · Pégalo en Gmail con Cmd+V', 'success'));
+  } else {
+    navigator.clipboard.writeText(idOrText)
+      .then(() => toast('✓ Copiado', 'success'))
+      .catch(() => toast('No se pudo copiar', 'error'));
+  }
+}
 
 // ═══════════════════════════════════════════════════════════════
 // UTILS
@@ -1099,6 +1712,16 @@ function setConn(state, label) {
 }
 function setRefreshSpinning(v) {
   document.getElementById('btnRefresh').classList.toggle('spinning', v);
+}
+
+let _pbTimer;
+function showPasteBar() {
+  document.getElementById('pasteBar').classList.add('show');
+  clearTimeout(_pbTimer);
+  _pbTimer = setTimeout(hidePasteBar, 30000);
+}
+function hidePasteBar() {
+  document.getElementById('pasteBar').classList.remove('show');
 }
 
 let _tt;
