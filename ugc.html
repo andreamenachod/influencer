@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Kampaoh · Influencer Hub</title>
+<title>Kampaoh · UGC Hub</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -151,30 +151,6 @@ tbody tr.done-row td{opacity:.55}
 .bar-track{flex:1;height:8px;background:var(--bg);border-radius:4px;overflow:hidden}
 .bar-fill{height:100%;background:var(--yellow);border-radius:4px;transition:width .5s ease}
 .bar-n{font-size:11px;font-weight:600;color:var(--muted);width:24px;text-align:right;flex-shrink:0}
-
-/* ── COMPARATIVA ── */
-.comp-wrap{padding:24px 28px;max-width:1100px}
-.comp-section{background:var(--card);border:1px solid var(--border);border-radius:var(--rl);padding:20px 22px;margin-bottom:16px;box-shadow:var(--sh)}
-.comp-section-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
-.comp-week-nav{display:flex;align-items:center;gap:8px}
-.comp-week-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
-.comp-wcard{background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:14px 16px;text-align:center}
-.comp-wcard .cwc-label{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);margin-bottom:6px}
-.comp-wcard .cwc-val{font-size:32px;font-weight:700;line-height:1}
-.comp-wcard .cwc-sub{font-size:11px;color:var(--muted);margin-top:4px}
-.comp-wcard.pos{border-left:3px solid var(--green)}.comp-wcard.pos .cwc-val{color:var(--green)}
-.comp-wcard.neg{border-left:3px solid var(--red)}.comp-wcard.neg .cwc-val{color:var(--red)}
-.comp-wcard.neutral{border-left:3px solid var(--faint)}
-.comp-bar-row{display:grid;grid-template-columns:160px 1fr 40px 1fr 40px;align-items:center;gap:8px;margin-bottom:10px}
-.comp-bar-row .cbl{font-size:12px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.comp-bar-track{height:10px;background:var(--bg);border-radius:4px;overflow:hidden}
-.comp-bar-fill26{height:100%;background:var(--black);border-radius:4px}
-.comp-bar-fill25{height:100%;background:var(--wgray);border-radius:4px}
-.comp-bar-n{font-size:11px;font-weight:600;color:var(--muted);text-align:center}
-.comp-legend{display:flex;align-items:center;gap:16px;margin-bottom:12px;font-size:11px;color:var(--muted)}
-.comp-legend span{display:flex;align-items:center;gap:5px}
-.comp-leg-dot{width:10px;height:10px;border-radius:2px;flex-shrink:0}
-.comp-month-row{display:grid;grid-template-columns:90px 1fr 36px 1fr 36px 60px;align-items:center;gap:8px;margin-bottom:8px}
 
 /* OVERLAY & PANEL */
 .ov{position:fixed;inset:0;background:rgba(0,0,0,.28);z-index:200;opacity:0;pointer-events:none;transition:opacity .2s}
@@ -366,12 +342,12 @@ tbody tr.done-row td{opacity:.55}
 <header class="hd">
   <div class="logo">
     <span class="logo-t">⛺</span>
-    <div><div class="logo-b">KAMPAOH</div><div class="logo-s">Influencer Hub</div></div>
+    <div><div class="logo-b">KAMPAOH</div><div class="logo-s">UGC Hub</div></div>
   </div>
   <div class="hd-sep"></div>
   <div class="hd-mode">
-    <a class="mode-btn active" href="index.html">⛺ Influencers</a>
-    <a class="mode-btn" href="ugc.html">🎬 UGC</a>
+    <a class="mode-btn" href="index.html">⛺ Influencers</a>
+    <a class="mode-btn active" href="ugc.html">🎬 UGC</a>
   </div>
   <div class="hd-sep"></div>
   <div class="hd-pills">
@@ -398,9 +374,6 @@ tbody tr.done-row td{opacity:.55}
   </button>
   <button class="tab" id="tab-todas" onclick="switchTab('todas')">
     Todas las colaboraciones <span class="tab-badge" id="tb-todas">0</span>
-  </button>
-  <button class="tab" id="tab-comp" onclick="switchTab('comp')">
-    📊 Comparativa 2025
   </button>
 </div>
 
@@ -557,37 +530,6 @@ tbody tr.done-row td{opacity:.55}
   </div>
 </div>
 
-<!-- ═══════════ COMPARATIVA VIEW ═══════════ -->
-<div class="view" id="view-comp">
-  <div class="comp-wrap">
-    <!-- summary cards -->
-    <div class="stats-grid" id="comp-cards"></div>
-    <!-- week navigator -->
-    <div class="comp-section">
-      <div class="comp-section-hd">
-        <div class="bars-title">Comparativa por semana</div>
-        <div class="comp-week-nav">
-          <button class="wn-btn" onclick="compWeekShift(-1)">← Anterior</button>
-          <span id="comp-wn-label" class="wn-label">—</span>
-          <button class="wn-btn" onclick="compWeekShift(1)">Siguiente →</button>
-          <button class="wn-btn" onclick="compWeekShift(0,true)" id="comp-wn-today">Semana actual</button>
-        </div>
-      </div>
-      <div id="comp-week-cards" class="comp-week-cards"></div>
-    </div>
-    <!-- camping ranking -->
-    <div class="comp-section">
-      <div class="bars-title" style="margin-bottom:14px">Colaboraciones por camping</div>
-      <div id="comp-camps"></div>
-    </div>
-    <!-- monthly overview -->
-    <div class="comp-section">
-      <div class="bars-title" style="margin-bottom:14px">Evolución mensual</div>
-      <div id="comp-months"></div>
-    </div>
-  </div>
-</div>
-
 <!-- FOOTER -->
 <div class="footer">
   <div class="fdot"></div>
@@ -618,6 +560,7 @@ tbody tr.done-row td{opacity:.55}
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
       Enviar Briefing
     </button>
+    <button class="btn-send btn-send-k" id="btn-d" disabled>📄 Contrato</button>
     <button class="btn-send btn-send-k" id="btn-c" disabled>⛺ Mail Camping</button>
   </div>
 </div>
@@ -626,7 +569,8 @@ tbody tr.done-row td{opacity:.55}
 // ═══════════════════════════════════════════════════════════════
 // CONFIG
 // ═══════════════════════════════════════════════════════════════
-const SHEET_ID = '156r9urplHxQI9bHSaln3cmzsMGudTpJ954lNIQi7vww';
+const SHEET_ID   = '1fosSDey9UD7HTcNW02wLIPfFtkqkjrooQlR6Oge48cs';
+const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbxpYUk2mloKmtHmko89-bcRGnrnYQIeSX_GH2BwR0il1CaVHaXHmXHETCXoko-2fUH7Rg/exec';
 
 // ═══════════════════════════════════════════════════════════════
 // STATE
@@ -638,7 +582,6 @@ const S = {
   notionLinks: {}, // localStorage overrides
   sent: {},        // { id: { b: bool, c: bool } } — briefing / camping sent
   loadTime: null,
-  data2025: [],   // raw 2025 rows
 };
 
 // Status config
@@ -719,11 +662,9 @@ async function loadData() {
   showLoading(true);
 
   try {
-    const [tBBDD, tColab, tCamp, t2025] = await Promise.all([
-      fetchSheet('BBDD 2026'),
-      fetchSheet('Colaboradores 2026'),
+    const [tUGC, tCamp] = await Promise.all([
+      fetchSheet('UGC'),
       fetchSheet('Campings'),
-      fetchSheet('BBDD 2025'),
     ]);
 
     // Parse campings
@@ -737,55 +678,47 @@ async function loadData() {
     });
     S.campings = campings;
 
-    // Parse influencers from both sheets
+    // Parse influencers from UGC sheet
+    // Column mapping:
+    //   A (0): username
+    //   B (1): nombre
+    //   C (2): email influencer
+    //   D (3): status ("Completada")
+    //   E (4): fecha visita
+    //   F (5): destino
+    //   G (6): tipología
+    //   H (7): briefing link (Notion)
+    //   I (8): localizador
     const influencers = [];
 
-    const parseRows = (rows, fuente, nuevaIdx) => {
+    const parseRows = (rows, fuente) => {
       rows.forEach(r => {
-        if (cleanStr(r[4]) !== 'Completada') return;
+        if (cleanStr(r[3]) !== 'Completada') return; // col D
         const u = cleanStr(r[0]);
         if (!u) return;
-        const fecha = parseFecha(r[6]);
+        const fecha = parseFecha(r[4]); // col E
         const year = fecha ? fecha.split('/')[2] : null;
         if (year && year !== '2026') return;
         const uSlug = u.replace(/[^a-z0-9]/gi, '').toLowerCase();
         const fSlug = (fecha || '').replace(/\//g, '');
-        const id = `${fuente.slice(0,1)}_${uSlug}_${fSlug}`;
+        const id = `U_${uSlug}_${fSlug}`;
         influencers.push({
           id,
           username: u.startsWith('@') ? u : `@${u}`,
           nombre:   cleanStr(r[1]),
           fecha,
-          destino:  cleanStr(r[7]),
-          email:    cleanStr(r[8]),
-          tipologia:cleanStr(r[9]),
-          linkSheet:   cleanStr(r[10]),
-          localizador: cleanStr(r[11]),
-          nueva: cleanStr(r[nuevaIdx] || ''),
+          destino:  cleanStr(r[5]),  // col F
+          email:    cleanStr(r[2]),  // col C
+          tipologia:cleanStr(r[6]),  // col G
+          linkSheet:    cleanStr(r[7]), // col H
+          localizador:  cleanStr(r[8]), // col I
+          contratoSheet:cleanStr(r[9]), // col J
+          nueva: '',
           fuente,
         });
       });
     };
-
-    parseRows(tableToRows(tBBDD), 'BBDD 2026', 12);   // col M
-    parseRows(tableToRows(tColab), 'Colaboradores 2026', 11); // col L
-
-    // Parse 2025 data
-    S.data2025 = [];
-    tableToRows(t2025).forEach(r => {
-      if (cleanStr(r[4]) !== 'Completada') return;
-      const u = cleanStr(r[0]);
-      if (!u) return;
-      const fecha = parseFecha(r[6]);
-      const year = fecha ? fecha.split('/')[2] : null;
-      if (year && year !== '2025') return;
-      S.data2025.push({
-        username: u.startsWith('@') ? u : `@${u}`,
-        fecha,
-        destino: cleanStr(r[7]),
-        nueva: cleanStr(r[8]), // col I
-      });
-    });
+    parseRows(tableToRows(tUGC), 'UGC');
 
     // Enrich
     S.all = influencers.map(r => enrich(r));
@@ -809,14 +742,15 @@ async function loadData() {
 // ENRICH
 // ═══════════════════════════════════════════════════════════════
 function enrich(r) {
-  // Notion link: sheet column K takes priority, then localStorage override
+  // Notion link: sheet column H takes priority, then localStorage override
   const link = r.linkSheet || S.notionLinks[r.id] || '';
+  const contrato = r.contratoSheet || '';
   const campMatch = matchCamping(r.destino, S.campings);
   const emailCamping = campMatch?.email || null;
   const estado = computeEstado(r.email, link, campMatch, emailCamping);
-  const sent = S.sent[r.id] || {b: false, c: false};
-  const isDone = sent.b && (sent.c || !campMatch);
-  return { ...r, link, campMatch, emailCamping, estado, sent, isDone };
+  const sent = S.sent[r.id] || {b: false, c: false, d: false};
+  const isDone = sent.b && sent.d && (sent.c || !campMatch);
+  return { ...r, link, contrato, campMatch, emailCamping, estado, sent, isDone };
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -870,193 +804,6 @@ function changeWeek(delta, reset) {
   if (btn) btn.style.display = weekOffset === 0 ? 'none' : '';
   renderPendientes();
 }
-// ═══════════════════════════════════════════════════════════════
-// COMPARATIVA 2025 vs 2026
-// ═══════════════════════════════════════════════════════════════
-let compWeekOffset = 0;
-
-function getISOWeek(date) {
-  const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
-  const day = d.getUTCDay() || 7;
-  d.setUTCDate(d.getUTCDate() + 4 - day);
-  const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
-  return Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
-}
-
-function parseDDMMYYYY(s) {
-  if (!s) return null;
-  const [d, m, y] = s.split('/');
-  if (!d || !m || !y) return null;
-  return new Date(parseInt(y), parseInt(m) - 1, parseInt(d));
-}
-
-function getWeekStartEnd(year, isoWeek) {
-  const jan4 = new Date(year, 0, 4);
-  const startOfWeek1 = new Date(jan4);
-  startOfWeek1.setDate(jan4.getDate() - ((jan4.getDay() || 7) - 1));
-  const start = new Date(startOfWeek1);
-  start.setDate(start.getDate() + (isoWeek - 1) * 7);
-  const end = new Date(start);
-  end.setDate(start.getDate() + 6);
-  return { start, end };
-}
-
-function compWeekShift(delta, reset) {
-  compWeekOffset = reset ? 0 : compWeekOffset + delta;
-  renderComparativa();
-}
-
-function renderComparativa() {
-  const all26 = S.all;
-  const all25 = S.data2025;
-  if (!all26 || !all25) return;
-
-  // Summary totals
-  const total26 = all26.length;
-  const total25 = all25.length;
-  const nuevas26 = all26.filter(i => !i.nueva || i.nueva.trim() === '').length;
-  const nuevas25 = all25.filter(i => !i.nueva || i.nueva.trim() === '').length;
-  const diff = total26 - total25;
-  const diffSign = diff > 0 ? '+' : '';
-  const pct = total25 > 0 ? Math.round((diff / total25) * 100) : 0;
-
-  document.getElementById('comp-cards').innerHTML = `
-    <div class="stat-card accent">
-      <div class="stat-label">Total 2026</div>
-      <div class="stat-value">${total26}</div>
-      <div class="stat-sub">colaboraciones completadas</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-label">Total 2025</div>
-      <div class="stat-value">${total25}</div>
-      <div class="stat-sub">colaboraciones completadas</div>
-    </div>
-    <div class="stat-card ${diff >= 0 ? 'green' : 'orange'}">
-      <div class="stat-label">Diferencia</div>
-      <div class="stat-value">${diffSign}${diff}</div>
-      <div class="stat-sub">${diffSign}${pct}% vs 2025</div>
-    </div>
-    <div class="stat-card blue">
-      <div class="stat-label">Nuevos perfiles 2026</div>
-      <div class="stat-value">${nuevas26}</div>
-      <div class="stat-sub">vs ${nuevas25} nuevos en 2025</div>
-    </div>
-  `;
-
-  // Week comparison
-  const today = new Date();
-  const curWeek = getISOWeek(today) + compWeekOffset;
-  const targetWeek = curWeek < 1 ? 1 : curWeek;
-  const w26 = getWeekStartEnd(2026, targetWeek);
-  const w25 = getWeekStartEnd(2025, targetWeek);
-
-  const count26w = all26.filter(i => {
-    const d = parseDDMMYYYY(i.fecha);
-    return d && d >= w26.start && d <= w26.end;
-  }).length;
-  const count25w = all25.filter(i => {
-    const d = parseDDMMYYYY(i.fecha);
-    return d && d >= w25.start && d <= w25.end;
-  }).length;
-  const weekDiff = count26w - count25w;
-  const weekSign = weekDiff > 0 ? '+' : '';
-  const meses = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
-  const fmtD = d => `${d.getDate()} ${meses[d.getMonth()]}`;
-  document.getElementById('comp-wn-label').textContent =
-    `Semana ${targetWeek} · 2026: ${fmtD(w26.start)}–${fmtD(w26.end)} · 2025: ${fmtD(w25.start)}–${fmtD(w25.end)}`;
-
-  document.getElementById('comp-week-cards').innerHTML = `
-    <div class="comp-wcard">
-      <div class="cwc-label">Semana ${targetWeek} · 2026</div>
-      <div class="cwc-val">${count26w}</div>
-      <div class="cwc-sub">colaboraciones</div>
-    </div>
-    <div class="comp-wcard">
-      <div class="cwc-label">Semana ${targetWeek} · 2025</div>
-      <div class="cwc-val">${count25w}</div>
-      <div class="cwc-sub">colaboraciones</div>
-    </div>
-    <div class="comp-wcard ${weekDiff > 0 ? 'pos' : weekDiff < 0 ? 'neg' : 'neutral'}">
-      <div class="cwc-label">Diferencia</div>
-      <div class="cwc-val">${weekSign}${weekDiff}</div>
-      <div class="cwc-sub">vs misma semana 2025</div>
-    </div>
-  `;
-
-  // Camping ranking
-  const campCount = (arr) => {
-    const m = {};
-    arr.forEach(i => {
-      const k = i.destino || 'Sin destino';
-      m[k] = (m[k] || 0) + 1;
-    });
-    return m;
-  };
-  const c26 = campCount(all26);
-  const c25 = campCount(all25);
-  const allCamps = [...new Set([...Object.keys(c26), ...Object.keys(c25)])];
-  allCamps.sort((a, b) => ((c26[b] || 0) + (c25[b] || 0)) - ((c26[a] || 0) + (c25[a] || 0)));
-  const maxVal = Math.max(...allCamps.map(c => Math.max(c26[c] || 0, c25[c] || 0)), 1);
-
-  document.getElementById('comp-camps').innerHTML =
-    `<div class="comp-legend">
-      <span><span class="comp-leg-dot" style="background:var(--black)"></span>2026</span>
-      <span><span class="comp-leg-dot" style="background:var(--wgray)"></span>2025</span>
-    </div>` +
-    allCamps.slice(0, 12).map(camp => {
-      const n26 = c26[camp] || 0;
-      const n25 = c25[camp] || 0;
-      const pct26 = Math.round((n26 / maxVal) * 100);
-      const pct25 = Math.round((n25 / maxVal) * 100);
-      const d = n26 - n25;
-      const ds = d > 0 ? `<span style="color:var(--green)">+${d}</span>` : d < 0 ? `<span style="color:var(--red)">${d}</span>` : `<span style="color:var(--faint)">—</span>`;
-      return `<div class="comp-bar-row">
-        <div class="cbl" title="${camp}">${camp}</div>
-        <div class="comp-bar-track"><div class="comp-bar-fill26" style="width:${pct26}%"></div></div>
-        <div class="comp-bar-n">${n26}</div>
-        <div class="comp-bar-track"><div class="comp-bar-fill25" style="width:${pct25}%"></div></div>
-        <div class="comp-bar-n">${n25} ${ds}</div>
-      </div>`;
-    }).join('');
-
-  // Monthly overview
-  const byMonth = (arr, year) => {
-    const m = {};
-    arr.forEach(i => {
-      const d = parseDDMMYYYY(i.fecha);
-      if (!d) return;
-      const key = d.getMonth();
-      m[key] = (m[key] || 0) + 1;
-    });
-    return m;
-  };
-  const m26 = byMonth(all26, 2026);
-  const m25 = byMonth(all25, 2025);
-  const mnames = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
-  const maxM = Math.max(...[0,1,2,3,4,5,6,7,8,9,10,11].map(i => Math.max(m26[i]||0, m25[i]||0)), 1);
-
-  document.getElementById('comp-months').innerHTML =
-    `<div class="comp-legend">
-      <span><span class="comp-leg-dot" style="background:var(--black)"></span>2026</span>
-      <span><span class="comp-leg-dot" style="background:var(--wgray)"></span>2025</span>
-    </div>` +
-    [0,1,2,3,4,5,6,7,8,9,10,11].filter(i => (m26[i]||0) + (m25[i]||0) > 0).map(i => {
-      const n26 = m26[i] || 0;
-      const n25 = m25[i] || 0;
-      const p26 = Math.round((n26 / maxM) * 100);
-      const p25 = Math.round((n25 / maxM) * 100);
-      const d = n26 - n25;
-      const ds = d > 0 ? `<span style="color:var(--green)">+${d}</span>` : d < 0 ? `<span style="color:var(--red)">${d}</span>` : `<span style="color:var(--faint)">—</span>`;
-      return `<div class="comp-month-row">
-        <div style="font-size:12px;font-weight:500">${mnames[i]}</div>
-        <div class="comp-bar-track"><div class="comp-bar-fill26" style="width:${p26}%"></div></div>
-        <div class="comp-bar-n">${n26}</div>
-        <div class="comp-bar-track"><div class="comp-bar-fill25" style="width:${p25}%"></div></div>
-        <div class="comp-bar-n">${n25}</div>
-        <div style="font-size:11px;text-align:right">${ds}</div>
-      </div>`;
-    }).join('') || '<p style="color:var(--faint);font-size:12px">Sin datos mensuales</p>';
-}
 
 function stripKampaoh(s) { return s.replace(/^kampaoh\s+/i, ''); }
 
@@ -1102,11 +849,8 @@ function switchTab(tab) {
   currentTab = tab;
   document.getElementById('view-pendientes').classList.toggle('active', tab==='pendientes');
   document.getElementById('view-todas').classList.toggle('active', tab==='todas');
-  document.getElementById('view-comp').classList.toggle('active', tab==='comp');
   document.getElementById('tab-pend').classList.toggle('active', tab==='pendientes');
   document.getElementById('tab-todas').classList.toggle('active', tab==='todas');
-  document.getElementById('tab-comp').classList.toggle('active', tab==='comp');
-  if (tab === 'comp') renderComparativa();
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -1340,12 +1084,16 @@ function openPanel(id) {
   document.getElementById('p-sub').textContent   = [i.nombre,i.tipologia,i.destino].filter(Boolean).join(' · ');
   buildPanel(i);
   const canB     = !!(i.email && i.link);
+  const canD     = !!(i.email && i.contrato);
   const canC     = !!i.emailCamping;
   const hasSlack = !!(i.campMatch && !i.emailCamping);
   const btnB = document.getElementById('btn-b');
+  const btnD = document.getElementById('btn-d');
   const btnC = document.getElementById('btn-c');
   btnB.disabled = !canB;
   btnB.onclick  = () => doBriefing(id);
+  btnD.disabled = !canD;
+  btnD.onclick  = () => doContrato(id);
   if (canC) {
     btnC.disabled = false;
     btnC.innerHTML = '⛺ Mail Camping';
@@ -1404,6 +1152,13 @@ function buildPanel(i) {
 
     <div class="done-section">
       <div class="done-section-title">Estado de envío</div>
+      <div class="done-row">
+        <span class="done-label">📄 Contrato enviado</span>
+        ${i.sent.d
+          ? `<button class="btn-mark btn-mark-undo" onclick="toggleSent('${i.id}','d',false)">✓ Enviado · Desmarcar</button>`
+          : `<button class="btn-mark btn-mark-do" onclick="toggleSent('${i.id}','d',true)">Marcar como enviado</button>`
+        }
+      </div>
       <div class="done-row">
         <span class="done-label">✉ Briefing al influencer</span>
         ${i.sent.b
@@ -1480,14 +1235,14 @@ function onNiInput(el) {
 }
 
 function saveLink(id) {
-  const val = (document.getElementById('ni-input')?.value||'').trim();
-  if (val) { try { new URL(val); } catch { toast('La URL no es válida','error'); return; } }
-  S.notionLinks[id] = val;
+  const v = (document.getElementById('ni-input')?.value||'').trim();
+  if (v) { try { new URL(v); } catch { toast('La URL no es válida','error'); return; } }
+  S.notionLinks[id] = v;
   try { localStorage.setItem('kmp_notion', JSON.stringify(S.notionLinks)); } catch(e) {}
   // Re-enrich and re-render
   const idx = S.all.findIndex(x=>x.id===id);
-  if (idx>-1) { S.all[idx] = enrich({...S.all[idx], linkSheet: val}); }
-  toast(val?'✓ Link de Notion guardado':'Link eliminado','success');
+  if (idx>-1) { S.all[idx] = enrich({...S.all[idx], linkSheet: v}); }
+  toast(v?'✓ Link de Notion guardado':'Link eliminado','success');
   renderAll(); updateStats();
   if (S.selected===id) {
     const i = S.all.find(x=>x.id===id);
@@ -1650,6 +1405,50 @@ function copyPlainText(text) {
   } catch(e) { return false; }
 }
 
+function doContrato(id) {
+  const i = S.all.find(x => x.id === id); if (!i) return;
+  if (!i.email)    { toast('Sin email de influencer', 'error'); return; }
+  if (!i.contrato) { toast('Sin contrato en Drive', 'error'); return; }
+
+  const username = i.username.replace(/^@/, '');
+  const nombre   = i.nombre || i.username;
+  const url = WEB_APP_URL
+    + '?username=' + encodeURIComponent(username)
+    + '&email='    + encodeURIComponent(i.email)
+    + '&nombre='   + encodeURIComponent(nombre);
+
+  toast('Preparando borrador…', 'info');
+
+  fetch(url)
+    .then(r => r.json())
+    .then(data => {
+      if (data.ok) {
+        window.open('https://mail.google.com/mail/#drafts', '_blank');
+        toast('✓ Borrador creado — revísalo en Gmail y envíalo', 'success');
+        toggleSent(id, 'd', true);
+      } else {
+        toast('Error: ' + (data.error || 'desconocido'), 'error');
+      }
+    })
+    .catch(() => {
+      toast('Error de conexión con el servidor', 'error');
+    });
+}
+
+function showContratoBar(driveUrl) {
+  let bar = document.getElementById('contrato-bar');
+  if (!bar) {
+    bar = document.createElement('div');
+    bar.id = 'contrato-bar';
+    bar.style.cssText = 'position:fixed;bottom:0;left:0;right:0;background:#1e40af;color:#fff;padding:12px 24px;display:flex;align-items:center;justify-content:space-between;z-index:999;font-size:13px;gap:12px';
+    document.body.appendChild(bar);
+  }
+  bar.innerHTML = `
+    <span>📎 Adjunta el contrato en Gmail — <a href="${driveUrl}" target="_blank" style="color:#93c5fd;text-decoration:underline">Abrir contrato en Drive</a></span>
+    <button onclick="document.getElementById('contrato-bar').remove()" style="background:rgba(255,255,255,.2);border:none;color:#fff;padding:4px 12px;border-radius:4px;cursor:pointer;font-size:12px">✕ Cerrar</button>
+  `;
+}
+
 function doSlack(id) {
   const i = S.all.find(x => x.id === id); if (!i) return;
   const ok = copyPlainText(campingPlain(i));
@@ -1682,8 +1481,8 @@ function copyText(idOrText) {
   // If it's an influencer id, copy the HTML email body
   const inf = S.all.find(x => x.id === idOrText);
   if (inf) {
-    copyHtmlToClipboard(briefingBodyHtml(inf))
-      .then(() => toast('✓ Email HTML copiado · Pégalo en Gmail con Cmd+V', 'success'));
+    copyHtmlToClipboard(briefingBodyHtml(inf));
+    toast('✓ Email HTML copiado · Pégalo en Gmail con Cmd+V', 'success');
   } else {
     navigator.clipboard.writeText(idOrText)
       .then(() => toast('✓ Copiado', 'success'))
