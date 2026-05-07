@@ -626,7 +626,8 @@ tbody tr.done-row td{opacity:.55}
 // ═══════════════════════════════════════════════════════════════
 // CONFIG
 // ═══════════════════════════════════════════════════════════════
-const SHEET_ID = '156r9urplHxQI9bHSaln3cmzsMGudTpJ954lNIQi7vww';
+const SHEET_ID   = '156r9urplHxQI9bHSaln3cmzsMGudTpJ954lNIQi7vww';
+const STATUS_URL = 'https://script.google.com/macros/s/AKfycbwfZ6EiDRJfdeMJGpAoPPxAQenGSbWqCN5klPTXlwyXUJfma5HFDio2pVurzDB_y9uJ/exec';
 
 // ═══════════════════════════════════════════════════════════════
 // STATE
@@ -657,8 +658,7 @@ function init() {
   try {
     const nl = localStorage.getItem('kmp_notion');
     if (nl) S.notionLinks = JSON.parse(nl);
-    const se = localStorage.getItem('kmp_sent');
-    if (se) S.sent = JSON.parse(se);
+    // sent state now comes from Google Sheet — no localStorage
   } catch(e) {}
   loadData();
 }
@@ -739,6 +739,7 @@ async function loadData() {
 
     // Parse influencers from both sheets
     const influencers = [];
+    S.sent = {}; // reset — sheet is source of truth
 
     const parseRows = (rows, fuente, nuevaIdx) => {
       rows.forEach(r => {
@@ -751,6 +752,11 @@ async function loadData() {
         const uSlug = u.replace(/[^a-z0-9]/gi, '').toLowerCase();
         const fSlug = (fecha || '').replace(/\//g, '');
         const id = `${fuente.slice(0,1)}_${uSlug}_${fSlug}`;
+        // col Q (16) = briefing, col R (17) = camping
+        S.sent[id] = {
+          b: cleanStr(r[16]) === 'enviado', // briefing - col Q
+          c: cleanStr(r[17]) === 'enviado', // camping  - col R
+        };
         influencers.push({
           id,
           username: u.startsWith('@') ? u : `@${u}`,
@@ -1501,7 +1507,7 @@ function saveLink(id) {
 function toggleSent(id, key, value) {
   if (!S.sent[id]) S.sent[id] = { b: false, c: false };
   S.sent[id][key] = value;
-  try { localStorage.setItem('kmp_sent', JSON.stringify(S.sent)); } catch(e) {}
+  callStatusAPI(id, key, value);
   const idx = S.all.findIndex(x=>x.id===id);
   if (idx>-1) { S.all[idx] = enrich(S.all[idx]); }
   toast(value ? '✓ Marcado como enviado' : 'Desmarcado', value?'success':'info');
@@ -1510,6 +1516,20 @@ function toggleSent(id, key, value) {
     const i = S.all.find(x=>x.id===id);
     if (i) buildPanel(i);
   }
+}
+
+function callStatusAPI(id, key, value) {
+  if (!STATUS_URL) return;
+  const item = S.all.find(x => x.id === id);
+  if (!item) return;
+  const url = STATUS_URL
+    + '?action=status'
+    + '&sheet='    + encodeURIComponent(item.fuente)
+    + '&username=' + encodeURIComponent(item.username)
+    + '&fecha='    + encodeURIComponent(item.fecha || '')
+    + '&field='    + encodeURIComponent(key)
+    + '&value='    + encodeURIComponent(value ? 'enviado' : 'pendiente');
+  fetch(url).catch(() => {});
 }
 
 // ═══════════════════════════════════════════════════════════════
