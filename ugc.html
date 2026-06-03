@@ -224,6 +224,71 @@ tbody tr.done-row td{opacity:.55}
   .panel{width:100%}.stats-grid{grid-template-columns:1fr 1fr}
 }
 
+@media(max-width:640px){
+  /* HEADER */
+  .hd{height:52px;padding:0 12px;gap:8px}
+  .logo-s{display:none}
+  .logo-b{font-size:12px}
+  .hd-sep{display:none}
+  .hd-mode .mode-btn{padding:3px 8px;font-size:10px}
+  .hd-mode{padding:2px}
+  .conn-badge{display:none}
+  .btn-refresh{padding:5px 9px}
+
+  /* TABS */
+  .tab-bar{padding:0 8px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+  .tab-bar::-webkit-scrollbar{display:none}
+  .tab{padding:10px 11px;font-size:11px;white-space:nowrap;flex-shrink:0}
+
+  /* WEEK NAV */
+  .week-nav{padding:8px 12px;flex-wrap:wrap;justify-content:center;gap:6px}
+  .wn-label{width:100%;order:-1;text-align:center;font-size:11px;min-width:0}
+  .wn-btn{flex:1;font-size:11px;padding:5px 6px;text-align:center}
+  .wn-today{font-size:10px;padding:5px 8px}
+
+  /* FILTERS */
+  .filters{padding:8px 12px;gap:6px}
+  .fi.wide{flex-basis:100%}
+  .fi input,.fi select{font-size:12px}
+
+  /* MAIN */
+  .main{padding:10px 12px 80px}
+
+  /* TABLE — ocultar columnas menos importantes */
+  .tcard{border-radius:10px}
+  table{min-width:0;table-layout:auto}
+  th:nth-child(4),td:nth-child(4),
+  th:nth-child(5),td:nth-child(5),
+  th:nth-child(6),td:nth-child(6),
+  th:nth-child(8),td:nth-child(8){display:none}
+  th:first-child{width:auto}
+  th:nth-child(2){width:80px}
+  th:nth-child(3){width:72px}
+  th:nth-child(7){width:90px}
+  td{padding:10px 8px}
+  td:first-child{padding-left:12px}
+  td:last-child{padding-right:12px}
+  .u{font-size:12px}
+  .acts{justify-content:flex-start}
+
+  /* STATS */
+  .stats-grid{grid-template-columns:1fr 1fr;gap:8px}
+  .stat-value{font-size:20px}
+  .stat-sub{font-size:10px}
+  .bars-section{padding:12px 14px}
+  .bar-label{width:100px;font-size:11px}
+
+  /* PANEL */
+  .pf{flex-wrap:wrap;gap:6px}
+  .btn-send{flex:1;min-width:calc(50% - 4px);font-size:11px}
+  .ph{padding:14px 16px}
+  .pb{padding:14px 16px}
+
+  /* PASTE BAR */
+  .paste-bar{padding:10px 14px;flex-wrap:wrap;gap:8px}
+  .paste-bar-msg{font-size:11px}
+}
+
 /* MODE SWITCHER */
 .hd-mode{display:flex;gap:2px;background:rgba(255,255,255,.08);border-radius:8px;padding:3px;flex-shrink:0}
 .mode-btn{padding:4px 13px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;border:none;background:transparent;color:rgba(255,255,255,.6);font-family:var(--font);transition:.15s;white-space:nowrap;text-decoration:none;display:flex;align-items:center;gap:5px}
@@ -600,7 +665,8 @@ function init() {
   try {
     const nl = localStorage.getItem('kmp_notion');
     if (nl) S.notionLinks = JSON.parse(nl);
-    // sent state now comes from Google Sheet — no localStorage
+    const se = localStorage.getItem('kmp_ugc_sent');
+    if (se) try { S.sent = JSON.parse(se); } catch(e) {}
   } catch(e) {}
   loadData();
 }
@@ -689,7 +755,6 @@ async function loadData() {
     //   H (7): briefing link (Notion)
     //   I (8): localizador
     const influencers = [];
-    S.sent = {}; // reset — sheet is source of truth
 
     const parseRows = (rows, fuente) => {
       rows.forEach(r => {
@@ -702,12 +767,11 @@ async function loadData() {
         const uSlug = u.replace(/[^a-z0-9]/gi, '').toLowerCase();
         const fSlug = (fecha || '').replace(/\//g, '');
         const id = `U_${uSlug}_${fSlug}`;
-        // col N (13) = briefing, col O (14) = camping, col P (15) = contrato
-        S.sent[id] = {
-          b: cleanStr(r[13]) === 'enviado', // briefing
-          c: cleanStr(r[14]) === 'enviado', // camping
-          d: cleanStr(r[15]) === 'enviado', // contrato
-        };
+        // col N (13) = briefing, col O (14) = camping, col P (15) = contrato — merge con localStorage
+        if (!S.sent[id]) S.sent[id] = { b: false, c: false, d: false };
+        if (cleanStr(r[13]) === 'enviado') S.sent[id].b = true;
+        if (cleanStr(r[14]) === 'enviado') S.sent[id].c = true;
+        if (cleanStr(r[15]) === 'enviado') S.sent[id].d = true;
         influencers.push({
           id,
           username: u.startsWith('@') ? u : `@${u}`,
@@ -1262,6 +1326,7 @@ function saveLink(id) {
 function toggleSent(id, key, value) {
   if (!S.sent[id]) S.sent[id] = { b: false, c: false, d: false };
   S.sent[id][key] = value;
+  try { localStorage.setItem('kmp_ugc_sent', JSON.stringify(S.sent)); } catch(e) {}
   callStatusAPI(id, key, value);
   const idx = S.all.findIndex(x=>x.id===id);
   if (idx>-1) { S.all[idx] = enrich(S.all[idx]); }
