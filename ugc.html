@@ -635,7 +635,7 @@ tbody tr.done-row td{opacity:.55}
 // CONFIG
 // ═══════════════════════════════════════════════════════════════
 const SHEET_ID   = '1fosSDey9UD7HTcNW02wLIPfFtkqkjrooQlR6Oge48cs';
-const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbzJkQJ75ylRdGMU23Ali424OXD_kMfuN1kW8lAjVQuqYS8-_7BlTwAHueA-VUP9i_DWlw/exec';
+const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbzhDxp4hxXgXXPg31JFGHF9UZ2RoyBLibdDMqtaxdZ_DOU7kyuCGHpnmftXoMeMccobOg/exec';
 
 // ═══════════════════════════════════════════════════════════════
 // STATE
@@ -1347,7 +1347,10 @@ function callStatusAPI(id, key, value) {
     + '&fecha='    + encodeURIComponent(item.fecha || '')
     + '&field='    + encodeURIComponent(key)
     + '&value='    + encodeURIComponent(value ? 'enviado' : 'pendiente');
-  fetch(url).catch(() => {});
+  fetch(url)
+    .then(r => r.json())
+    .then(d => { if (!d.ok) toast('Error sheet: ' + (d.error || '?'), 'error'); })
+    .catch(() => toast('Sin conexión con el sheet', 'error'));
 }
 
 // ═══════════════════════════════════════════════════════════════
