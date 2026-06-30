@@ -477,7 +477,7 @@ tbody tr.done-row td{opacity:.55}
     Todas las colaboraciones <span class="tab-badge" id="tb-todas">0</span>
   </button>
   <button class="tab" id="tab-comp" onclick="switchTab('comp')">
-    📊 Comparativa 2025
+    📊 Comparativa Temporada
   </button>
 </div>
 
@@ -716,7 +716,8 @@ const S = {
   notionLinks: {}, // localStorage overrides
   sent: {},        // { id: { b: bool, c: bool } } — briefing / camping sent
   loadTime: null,
-  data2025: [],   // raw 2025 rows
+  currSeasonExtra: [], // Oct-Dic 2025 → inicio de temporada 25/26
+  prevSeason: [],      // Ene-Sep 2025 → temporada 24/25 (parcial)
 };
 
 // Status config
@@ -852,21 +853,28 @@ async function loadData() {
     parseRows(tableToRows(tBBDD), 'BBDD 2026', 12);   // col M
     parseRows(tableToRows(tColab), 'Colaboradores 2026', 11); // col L
 
-    // Parse 2025 data
-    S.data2025 = [];
+    // Parse 2025 data — split por temporada Kampaoh (oct-oct)
+    S.currSeasonExtra = [];
+    S.prevSeason = [];
     tableToRows(t2025).forEach(r => {
       if (cleanStr(r[4]) !== 'Completada') return;
       const u = cleanStr(r[0]);
       if (!u) return;
       const fecha = parseFecha(r[6]);
       const year = fecha ? fecha.split('/')[2] : null;
-      if (year && year !== '2025') return;
-      S.data2025.push({
+      if (year !== '2025') return;
+      const month = fecha ? parseInt(fecha.split('/')[1]) : 0;
+      const record = {
         username: u.startsWith('@') ? u : `@${u}`,
         fecha,
         destino: cleanStr(r[7]),
-        nueva: cleanStr(r[8]), // col I
-      });
+        nueva: cleanStr(r[8]),
+      };
+      if (month >= 10) {
+        S.currSeasonExtra.push(record); // Oct-Dic 2025 → temporada 25/26
+      } else {
+        S.prevSeason.push(record);      // Ene-Sep 2025 → temporada 24/25
+      }
     });
 
     // Enrich
@@ -989,29 +997,31 @@ function compWeekShift(delta, reset) {
 }
 
 function renderComparativa() {
-  const all26 = S.all;
-  const all25 = S.data2025;
-  if (!all26 || !all25) return;
+  // Temporada 25/26: Oct-Dic 2025 + todo BBDD 2026
+  const curr = [...S.currSeasonExtra, ...S.all];
+  // Temporada 24/25: Ene-Sep 2025 (Oct-Dic 2024 no disponible en el sheet)
+  const prev = S.prevSeason;
+  if (!curr) return;
 
   // Summary totals
-  const total26 = all26.length;
-  const total25 = all25.length;
-  const nuevas26 = all26.filter(i => !i.nueva || i.nueva.trim() === '').length;
-  const nuevas25 = all25.filter(i => !i.nueva || i.nueva.trim() === '').length;
-  const diff = total26 - total25;
+  const totalCurr = curr.length;
+  const totalPrev = prev.length;
+  const nuevasCurr = curr.filter(i => !i.nueva || i.nueva.trim() === '').length;
+  const nuevasPrev = prev.filter(i => !i.nueva || i.nueva.trim() === '').length;
+  const diff = totalCurr - totalPrev;
   const diffSign = diff > 0 ? '+' : '';
-  const pct = total25 > 0 ? Math.round((diff / total25) * 100) : 0;
+  const pct = totalPrev > 0 ? Math.round((diff / totalPrev) * 100) : 0;
 
   document.getElementById('comp-cards').innerHTML = `
     <div class="stat-card accent">
-      <div class="stat-label">Total 2026</div>
-      <div class="stat-value">${total26}</div>
-      <div class="stat-sub">colaboraciones completadas</div>
+      <div class="stat-label">Total Temporada 25/26</div>
+      <div class="stat-value">${totalCurr}</div>
+      <div class="stat-sub">Oct 2025 – Sep 2026</div>
     </div>
     <div class="stat-card">
       <div class="stat-label">Total 2025</div>
-      <div class="stat-value">${total25}</div>
-      <div class="stat-sub">colaboraciones completadas</div>
+      <div class="stat-value">${totalPrev}</div>
+      <div class="stat-sub">Ene–Sep 2025</div>
     </div>
     <div class="stat-card ${diff >= 0 ? 'green' : 'orange'}">
       <div class="stat-label">Diferencia</div>
@@ -1019,43 +1029,43 @@ function renderComparativa() {
       <div class="stat-sub">${diffSign}${pct}% vs 2025</div>
     </div>
     <div class="stat-card blue">
-      <div class="stat-label">Nuevos perfiles 2026</div>
-      <div class="stat-value">${nuevas26}</div>
-      <div class="stat-sub">vs ${nuevas25} nuevos en 2025</div>
+      <div class="stat-label">Nuevos perfiles T25/26</div>
+      <div class="stat-value">${nuevasCurr}</div>
+      <div class="stat-sub">vs ${nuevasPrev} nuevos en 2025</div>
     </div>
   `;
 
-  // Week comparison
+  // Week comparison — semana ISO en temporada actual vs misma semana temporada anterior
   const today = new Date();
   const curWeek = getISOWeek(today) + compWeekOffset;
   const targetWeek = curWeek < 1 ? 1 : curWeek;
   const w26 = getWeekStartEnd(2026, targetWeek);
   const w25 = getWeekStartEnd(2025, targetWeek);
 
-  const count26w = all26.filter(i => {
+  const countCurrW = curr.filter(i => {
     const d = parseDDMMYYYY(i.fecha);
     return d && d >= w26.start && d <= w26.end;
   }).length;
-  const count25w = all25.filter(i => {
+  const countPrevW = prev.filter(i => {
     const d = parseDDMMYYYY(i.fecha);
     return d && d >= w25.start && d <= w25.end;
   }).length;
-  const weekDiff = count26w - count25w;
+  const weekDiff = countCurrW - countPrevW;
   const weekSign = weekDiff > 0 ? '+' : '';
   const meses = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
   const fmtD = d => `${d.getDate()} ${meses[d.getMonth()]}`;
   document.getElementById('comp-wn-label').textContent =
-    `Semana ${targetWeek} · 2026: ${fmtD(w26.start)}–${fmtD(w26.end)} · 2025: ${fmtD(w25.start)}–${fmtD(w25.end)}`;
+    `Semana ${targetWeek} · T25/26: ${fmtD(w26.start)}–${fmtD(w26.end)} · 2025: ${fmtD(w25.start)}–${fmtD(w25.end)}`;
 
   document.getElementById('comp-week-cards').innerHTML = `
     <div class="comp-wcard">
-      <div class="cwc-label">Semana ${targetWeek} · 2026</div>
-      <div class="cwc-val">${count26w}</div>
+      <div class="cwc-label">Semana ${targetWeek} · T25/26</div>
+      <div class="cwc-val">${countCurrW}</div>
       <div class="cwc-sub">colaboraciones</div>
     </div>
     <div class="comp-wcard">
       <div class="cwc-label">Semana ${targetWeek} · 2025</div>
-      <div class="cwc-val">${count25w}</div>
+      <div class="cwc-val">${countPrevW}</div>
       <div class="cwc-sub">colaboraciones</div>
     </div>
     <div class="comp-wcard ${weekDiff > 0 ? 'pos' : weekDiff < 0 ? 'neg' : 'neutral'}">
@@ -1074,67 +1084,73 @@ function renderComparativa() {
     });
     return m;
   };
-  const c26 = campCount(all26);
-  const c25 = campCount(all25);
-  const allCamps = [...new Set([...Object.keys(c26), ...Object.keys(c25)])];
-  allCamps.sort((a, b) => ((c26[b] || 0) + (c25[b] || 0)) - ((c26[a] || 0) + (c25[a] || 0)));
-  const maxVal = Math.max(...allCamps.map(c => Math.max(c26[c] || 0, c25[c] || 0)), 1);
+  const cCurr = campCount(curr);
+  const cPrev = campCount(prev);
+  const allCamps = [...new Set([...Object.keys(cCurr), ...Object.keys(cPrev)])];
+  allCamps.sort((a, b) => ((cCurr[b] || 0) + (cPrev[b] || 0)) - ((cCurr[a] || 0) + (cPrev[a] || 0)));
+  const maxVal = Math.max(...allCamps.map(c => Math.max(cCurr[c] || 0, cPrev[c] || 0)), 1);
 
   document.getElementById('comp-camps').innerHTML =
     `<div class="comp-legend">
-      <span><span class="comp-leg-dot" style="background:var(--black)"></span>2026</span>
+      <span><span class="comp-leg-dot" style="background:var(--black)"></span>T25/26</span>
       <span><span class="comp-leg-dot" style="background:var(--wgray)"></span>2025</span>
     </div>` +
     allCamps.slice(0, 12).map(camp => {
-      const n26 = c26[camp] || 0;
-      const n25 = c25[camp] || 0;
-      const pct26 = Math.round((n26 / maxVal) * 100);
-      const pct25 = Math.round((n25 / maxVal) * 100);
-      const d = n26 - n25;
+      const nC = cCurr[camp] || 0;
+      const nP = cPrev[camp] || 0;
+      const pctC = Math.round((nC / maxVal) * 100);
+      const pctP = Math.round((nP / maxVal) * 100);
+      const d = nC - nP;
       const ds = d > 0 ? `<span style="color:var(--green)">+${d}</span>` : d < 0 ? `<span style="color:var(--red)">${d}</span>` : `<span style="color:var(--faint)">—</span>`;
       return `<div class="comp-bar-row">
         <div class="cbl" title="${camp}">${camp}</div>
-        <div class="comp-bar-track"><div class="comp-bar-fill26" style="width:${pct26}%"></div></div>
-        <div class="comp-bar-n">${n26}</div>
-        <div class="comp-bar-track"><div class="comp-bar-fill25" style="width:${pct25}%"></div></div>
-        <div class="comp-bar-n">${n25} ${ds}</div>
+        <div class="comp-bar-track"><div class="comp-bar-fill26" style="width:${pctC}%"></div></div>
+        <div class="comp-bar-n">${nC}</div>
+        <div class="comp-bar-track"><div class="comp-bar-fill25" style="width:${pctP}%"></div></div>
+        <div class="comp-bar-n">${nP} ${ds}</div>
       </div>`;
     }).join('');
 
-  // Monthly overview
-  const byMonth = (arr, year) => {
+  // Monthly overview — meses en orden de temporada: Oct, Nov, Dic, Ene, Feb, … Sep
+  // seasonIdx: 0=Oct, 1=Nov, 2=Dic, 3=Ene, 4=Feb, 5=Mar, 6=Abr, 7=May, 8=Jun, 9=Jul, 10=Ago, 11=Sep
+  const toSeasonIdx = (fecha) => {
+    const d = parseDDMMYYYY(fecha);
+    if (!d) return -1;
+    const m = d.getMonth() + 1; // 1-12
+    return m >= 10 ? m - 10 : m + 2;
+  };
+  const bySeasonMonth = (arr) => {
     const m = {};
     arr.forEach(i => {
-      const d = parseDDMMYYYY(i.fecha);
-      if (!d) return;
-      const key = d.getMonth();
-      m[key] = (m[key] || 0) + 1;
+      const sm = toSeasonIdx(i.fecha);
+      if (sm < 0) return;
+      m[sm] = (m[sm] || 0) + 1;
     });
     return m;
   };
-  const m26 = byMonth(all26, 2026);
-  const m25 = byMonth(all25, 2025);
-  const mnames = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
-  const maxM = Math.max(...[0,1,2,3,4,5,6,7,8,9,10,11].map(i => Math.max(m26[i]||0, m25[i]||0)), 1);
+  const mCurr = bySeasonMonth(curr);
+  const mPrev = bySeasonMonth(prev);
+  const seasonNames = ['Oct','Nov','Dic','Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep'];
+  const maxM = Math.max(...[0,1,2,3,4,5,6,7,8,9,10,11].map(i => Math.max(mCurr[i]||0, mPrev[i]||0)), 1);
 
   document.getElementById('comp-months').innerHTML =
     `<div class="comp-legend">
-      <span><span class="comp-leg-dot" style="background:var(--black)"></span>2026</span>
+      <span><span class="comp-leg-dot" style="background:var(--black)"></span>T25/26</span>
       <span><span class="comp-leg-dot" style="background:var(--wgray)"></span>2025</span>
     </div>` +
-    [0,1,2,3,4,5,6,7,8,9,10,11].filter(i => (m26[i]||0) + (m25[i]||0) > 0).map(i => {
-      const n26 = m26[i] || 0;
-      const n25 = m25[i] || 0;
-      const p26 = Math.round((n26 / maxM) * 100);
-      const p25 = Math.round((n25 / maxM) * 100);
-      const d = n26 - n25;
+    [0,1,2,3,4,5,6,7,8,9,10,11].filter(i => (mCurr[i]||0) + (mPrev[i]||0) > 0).map(i => {
+      const nC = mCurr[i] || 0;
+      const nP = mPrev[i] || 0;
+      const pC = Math.round((nC / maxM) * 100);
+      const pP = Math.round((nP / maxM) * 100);
+      const d = nC - nP;
       const ds = d > 0 ? `<span style="color:var(--green)">+${d}</span>` : d < 0 ? `<span style="color:var(--red)">${d}</span>` : `<span style="color:var(--faint)">—</span>`;
       return `<div class="comp-month-row">
-        <div style="font-size:12px;font-weight:500">${mnames[i]}</div>
-        <div class="comp-bar-track"><div class="comp-bar-fill26" style="width:${p26}%"></div></div>
-        <div class="comp-bar-n">${n26}</div>
-        <div class="comp-bar-track"><div class="comp-bar-fill25" style="width:${p25}%"></div></div>
-        <div class="comp-bar-n">${n25}</div>
+        <div style="font-size:12px;font-weight:500">${seasonNames[i]}</div>
+        <div class="comp-bar-track"><div class="comp-bar-fill26" style="width:${pC}%"></div></div>
+        <div class="comp-bar-n">${nC}</div>
+        <div class="comp-bar-track"><div class="comp-bar-fill25" style="width:${pP}%"></div></div>
+        <div class="comp-bar-n">${nP}</div>
         <div style="font-size:11px;text-align:right">${ds}</div>
       </div>`;
     }).join('') || '<p style="color:var(--faint);font-size:12px">Sin datos mensuales</p>';
