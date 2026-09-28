@@ -20,6 +20,21 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:14px;line-height:1.5;min-height:100vh;overflow-x:hidden}
 
+/* PASSWORD GATE */
+.pw-gate{position:fixed;inset:0;background:var(--black);z-index:9999;display:flex;align-items:center;justify-content:center}
+.pw-gate.hidden{display:none}
+.pw-box{background:#111;border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:36px 40px;width:340px;text-align:center}
+.pw-logo{font-size:32px;margin-bottom:12px}
+.pw-title{font-size:16px;font-weight:700;color:#fff;margin-bottom:4px}
+.pw-sub{font-size:12px;color:rgba(255,255,255,.4);margin-bottom:24px}
+.pw-input{width:100%;padding:11px 14px;border-radius:8px;border:1.5px solid rgba(255,255,255,.15);background:rgba(255,255,255,.07);color:#fff;font-family:var(--font);font-size:18px;font-weight:700;letter-spacing:.3em;text-align:center;outline:none;transition:.15s}
+.pw-input:focus{border-color:var(--yellow)}
+.pw-input.pw-error{border-color:var(--red);animation:shake .3s ease}
+.pw-btn{margin-top:14px;width:100%;padding:11px;border-radius:8px;background:var(--yellow);color:var(--black);font-family:var(--font);font-size:13px;font-weight:700;border:none;cursor:pointer;transition:.15s}
+.pw-btn:hover{background:#ecc000}
+.pw-err-msg{font-size:11px;color:var(--red);margin-top:8px;min-height:16px}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+
 /* HEADER */
 .hd{background:var(--black);color:#fff;padding:0 28px;height:60px;display:flex;align-items:center;gap:20px;position:sticky;top:0;z-index:100}
 .logo{display:flex;align-items:center;gap:10px;flex-shrink:0}
@@ -340,6 +355,19 @@ tbody tr.done-row td{opacity:.55}
 </head>
 <body>
 
+<!-- PASSWORD GATE -->
+<div class="pw-gate" id="pwGate">
+  <div class="pw-box">
+    <div class="pw-logo">🎬</div>
+    <div class="pw-title">Kampaoh · UGC Hub</div>
+    <div class="pw-sub">Introduce la contraseña para acceder</div>
+    <input class="pw-input" id="pwInput" type="password" placeholder="····" maxlength="20"
+      onkeydown="if(event.key==='Enter')pwCheck()">
+    <button class="pw-btn" onclick="pwCheck()">Entrar</button>
+    <div class="pw-err-msg" id="pwErr"></div>
+  </div>
+</div>
+
 <!-- PASTE BAR -->
 <div class="paste-bar" id="pasteBar">
   <div class="paste-bar-msg">
@@ -631,6 +659,32 @@ tbody tr.done-row td{opacity:.55}
 </div>
 
 <script>
+// ═══════════════════════════════════════════════════════════════
+// PASSWORD GATE
+// ═══════════════════════════════════════════════════════════════
+(function() {
+  if (sessionStorage.getItem('kmp_auth') === '1') {
+    document.getElementById('pwGate').classList.add('hidden');
+  } else {
+    setTimeout(() => document.getElementById('pwInput').focus(), 100);
+  }
+})();
+
+function pwCheck() {
+  const val = document.getElementById('pwInput').value;
+  const inp = document.getElementById('pwInput');
+  const err = document.getElementById('pwErr');
+  if (val === '3212') {
+    sessionStorage.setItem('kmp_auth', '1');
+    document.getElementById('pwGate').classList.add('hidden');
+  } else {
+    inp.classList.add('pw-error');
+    err.textContent = 'Contraseña incorrecta';
+    inp.value = '';
+    setTimeout(() => { inp.classList.remove('pw-error'); err.textContent = ''; }, 1500);
+  }
+}
+
 // ═══════════════════════════════════════════════════════════════
 // CONFIG
 // ═══════════════════════════════════════════════════════════════
@@ -1396,7 +1450,7 @@ function briefingHtml(i) {
   return `Buenos días, ${nombre}:<br><br>Soy Andrea, del departamento de marketing de Kampaoh. ¡Se va acercando la fecha de vuestra llegada a ${dest}! Como sabéis, tenéis una reserva para el ${fecha} en Kampaoh en nuestra ${tipo}.<br><br>Comparto contigo en ${linkEl} los aspectos a tener en cuenta acerca de nuestra colaboración. Solo tienes que hacer clic sobre los triángulos para desplegar la información. Si después de revisarlo tienes alguna duda, me dices sin problema.<br><br>Estoy a vuestra disposición para lo que necesitéis. Espero que disfrutéis mucho en Kampaoh ${dest} ⛺❤`;
 }
 
-const CC = 'marisafelices@kampaoh.com,noemirodriguez@kampaoh.com';
+const CC = 'marisafelices@kampaoh.com';
 
 function campingBodyCore(i) {
   const loc  = i?.localizador ? ` ${i.localizador}` : '';

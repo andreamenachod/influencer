@@ -20,6 +20,21 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:14px;line-height:1.5;min-height:100vh;overflow-x:hidden}
 
+/* PASSWORD GATE */
+.pw-gate{position:fixed;inset:0;background:var(--black);z-index:9999;display:flex;align-items:center;justify-content:center}
+.pw-gate.hidden{display:none}
+.pw-box{background:#111;border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:36px 40px;width:340px;text-align:center}
+.pw-logo{font-size:32px;margin-bottom:12px}
+.pw-title{font-size:16px;font-weight:700;color:#fff;margin-bottom:4px}
+.pw-sub{font-size:12px;color:rgba(255,255,255,.4);margin-bottom:24px}
+.pw-input{width:100%;padding:11px 14px;border-radius:8px;border:1.5px solid rgba(255,255,255,.15);background:rgba(255,255,255,.07);color:#fff;font-family:var(--font);font-size:18px;font-weight:700;letter-spacing:.3em;text-align:center;outline:none;transition:.15s}
+.pw-input:focus{border-color:var(--yellow)}
+.pw-input.pw-error{border-color:var(--red);animation:shake .3s ease}
+.pw-btn{margin-top:14px;width:100%;padding:11px;border-radius:8px;background:var(--yellow);color:var(--black);font-family:var(--font);font-size:13px;font-weight:700;border:none;cursor:pointer;transition:.15s}
+.pw-btn:hover{background:#ecc000}
+.pw-err-msg{font-size:11px;color:var(--red);margin-top:8px;min-height:16px}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+
 /* HEADER */
 .hd{background:var(--black);color:#fff;padding:0 28px;height:60px;display:flex;align-items:center;gap:20px;position:sticky;top:0;z-index:100}
 .logo{display:flex;align-items:center;gap:10px;flex-shrink:0}
@@ -376,6 +391,19 @@ tbody tr.done-row td{opacity:.55}
 </head>
 <body>
 
+<!-- PASSWORD GATE -->
+<div class="pw-gate" id="pwGate">
+  <div class="pw-box">
+    <div class="pw-logo">⛺</div>
+    <div class="pw-title">Kampaoh · Influencer Hub</div>
+    <div class="pw-sub">Introduce la contraseña para acceder</div>
+    <input class="pw-input" id="pwInput" type="password" placeholder="····" maxlength="20"
+      onkeydown="if(event.key==='Enter')pwCheck()">
+    <button class="pw-btn" onclick="pwCheck()">Entrar</button>
+    <div class="pw-err-msg" id="pwErr"></div>
+  </div>
+</div>
+
 <!-- PASTE BAR -->
 <div class="paste-bar" id="pasteBar">
   <div class="paste-bar-msg">
@@ -582,7 +610,7 @@ tbody tr.done-row td{opacity:.55}
     <!-- STATS CARDS -->
     <div class="stats-grid" id="stats-grid">
       <div class="stat-card accent">
-        <div class="stat-label">Total completadas 2026</div>
+        <div class="stat-label">Total completadas T26/27</div>
         <div class="stat-value" id="st-total">—</div>
         <div class="stat-sub">colaboraciones</div>
       </div>
@@ -701,8 +729,36 @@ tbody tr.done-row td{opacity:.55}
 
 <script>
 // ═══════════════════════════════════════════════════════════════
+// PASSWORD GATE
+// ═══════════════════════════════════════════════════════════════
+(function() {
+  if (sessionStorage.getItem('kmp_auth') === '1') {
+    document.getElementById('pwGate').classList.add('hidden');
+  } else {
+    setTimeout(() => document.getElementById('pwInput').focus(), 100);
+  }
+})();
+
+function pwCheck() {
+  const val = document.getElementById('pwInput').value;
+  const inp = document.getElementById('pwInput');
+  const err = document.getElementById('pwErr');
+  if (val === '3212') {
+    sessionStorage.setItem('kmp_auth', '1');
+    document.getElementById('pwGate').classList.add('hidden');
+  } else {
+    inp.classList.add('pw-error');
+    err.textContent = 'Contraseña incorrecta';
+    inp.value = '';
+    setTimeout(() => { inp.classList.remove('pw-error'); err.textContent = ''; }, 1500);
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
 // CONFIG
 // ═══════════════════════════════════════════════════════════════
+// Temporada Kampaoh (oct–sep) en curso, por año de inicio: 2026 → T26/27 (BBDD 2027)
+const SEASON     = 2026;
 const SHEET_ID   = '156r9urplHxQI9bHSaln3cmzsMGudTpJ954lNIQi7vww';
 const STATUS_URL = 'https://script.google.com/macros/s/AKfycbwfZ6EiDRJfdeMJGpAoPPxAQenGSbWqCN5klPTXlwyXUJfma5HFDio2pVurzDB_y9uJ/exec';
 
@@ -716,8 +772,8 @@ const S = {
   notionLinks: {}, // localStorage overrides
   sent: {},        // { id: { b: bool, c: bool } } — briefing / camping sent
   loadTime: null,
-  currSeasonExtra: [], // Oct-Dic 2025 → inicio de temporada 25/26
-  prevSeason: [],      // Ene-Sep 2025 → temporada 24/25 (parcial)
+  seasonCurr: [], // temporada en curso (oct SEASON – sep SEASON+1)
+  seasonPrev: [], // temporada anterior (oct SEASON-1 – sep SEASON)
 };
 
 // Status config
@@ -750,9 +806,9 @@ async function fetchSheet(name) {
   const res = await fetch(url);
   const text = await res.text();
   const m = text.match(/google\.visualization\.Query\.setResponse\(([\s\S]*?)\);\s*$/);
-  if (!m) throw new Error('Bad response for sheet: ' + name);
+  if (!m) throw new Error('No se pudo leer la pestaña "' + name + '"');
   const data = JSON.parse(m[1]);
-  if (data.status !== 'ok') throw new Error(data.errors?.[0]?.message || 'Sheet error');
+  if (data.status !== 'ok') throw new Error('Pestaña "' + name + '": ' + (data.errors?.[0]?.detailed_message || data.errors?.[0]?.message || 'error'));
   return data.table;
 }
 
@@ -798,10 +854,12 @@ async function loadData() {
   showLoading(true);
 
   try {
-    const [tBBDD, tColab, tCamp, t2025] = await Promise.all([
+    const [tBBDD, tColab, tCamp, t2026, tColab26, t2025] = await Promise.all([
+      fetchSheet('BBDD 2027'),
+      fetchSheet('Colaboradores 2027'),
+      fetchSheet('Campings'),
       fetchSheet('BBDD 2026'),
       fetchSheet('Colaboradores 2026'),
-      fetchSheet('Campings'),
       fetchSheet('BBDD 2025'),
     ]);
 
@@ -825,8 +883,9 @@ async function loadData() {
         const u = cleanStr(r[0]);
         if (!u) return;
         const fecha = parseFecha(r[6]);
-        const year = fecha ? fecha.split('/')[2] : null;
-        if (year && year !== '2026') return;
+        // Solo la temporada en curso (las filas sin fecha se mantienen)
+        const fd = parseDDMMYYYY(fecha);
+        if (fd && seasonOf(fd) !== SEASON) return;
         const uSlug = u.replace(/[^a-z0-9]/gi, '').toLowerCase();
         const fSlug = (fecha || '').replace(/\//g, '');
         const id = `${fuente.slice(0,1)}_${uSlug}_${fSlug}`;
@@ -850,32 +909,37 @@ async function loadData() {
       });
     };
 
-    parseRows(tableToRows(tBBDD), 'BBDD 2026', 12);   // col M
-    parseRows(tableToRows(tColab), 'Colaboradores 2026', 11); // col L
+    parseRows(tableToRows(tBBDD), 'BBDD 2027', 12);   // col M
+    parseRows(tableToRows(tColab), 'Colaboradores 2027', 12); // col M
 
-    // Parse 2025 data — split por temporada Kampaoh (oct-oct)
-    S.currSeasonExtra = [];
-    S.prevSeason = [];
-    tableToRows(t2025).forEach(r => {
-      if (cleanStr(r[4]) !== 'Completada') return;
-      const u = cleanStr(r[0]);
-      if (!u) return;
-      const fecha = parseFecha(r[6]);
-      const year = fecha ? fecha.split('/')[2] : null;
-      if (year !== '2025') return;
-      const month = fecha ? parseInt(fecha.split('/')[1]) : 0;
-      const record = {
-        username: u.startsWith('@') ? u : `@${u}`,
-        fecha,
-        destino: cleanStr(r[7]),
-        nueva: cleanStr(r[8]),
-      };
-      if (month >= 10) {
-        S.currSeasonExtra.push(record); // Oct-Dic 2025 → temporada 25/26
-      } else {
-        S.prevSeason.push(record);      // Ene-Sep 2025 → temporada 24/25
-      }
-    });
+    // Comparativa — cada colaboración va a su temporada Kampaoh (oct-sep) según la fecha de visita,
+    // sin importar en qué pestaña esté. Se deduplica por usuario + fecha.
+    S.seasonCurr = [];
+    S.seasonPrev = [];
+    const seen = new Set();
+    const addSeasonRows = (rows, nuevaIdx) => {
+      rows.forEach(r => {
+        if (cleanStr(r[4]) !== 'Completada') return;
+        const u = cleanStr(r[0]);
+        if (!u) return;
+        const fecha = parseFecha(r[6]);
+        const d = parseDDMMYYYY(fecha);
+        if (!d) return;
+        const season = seasonOf(d);
+        const username = u.startsWith('@') ? u : `@${u}`;
+        const key = `${username.toLowerCase()}|${fecha}`;
+        if (seen.has(key)) return;
+        seen.add(key);
+        const record = { username, fecha, destino: cleanStr(r[7]), nueva: cleanStr(r[nuevaIdx] || '') };
+        if (season === SEASON) S.seasonCurr.push(record);
+        else if (season === SEASON - 1) S.seasonPrev.push(record);
+      });
+    };
+    addSeasonRows(tableToRows(tBBDD), 12);    // BBDD 2027, col M
+    addSeasonRows(tableToRows(tColab), 12);   // Colaboradores 2027, col M
+    addSeasonRows(tableToRows(t2026), 12);    // BBDD 2026, col M
+    addSeasonRows(tableToRows(tColab26), 12); // Colaboradores 2026, col M
+    addSeasonRows(tableToRows(t2025), 8);     // BBDD 2025, col I
 
     // Enrich
     S.all = influencers.map(r => enrich(r));
@@ -883,13 +947,14 @@ async function loadData() {
 
     populateFilterOptions();
     renderAll();
+    if (currentTab === 'comp') renderComparativa(); // si ya estaba abierta mientras cargaba
     updateStats();
     updateFooter();
     setConn('ok', 'Conectado · Google Sheets');
   } catch(err) {
     console.error(err);
     setConn('error', 'Error de conexión');
-    toast('Error al cargar datos. Verifica que el documento es público.', 'error');
+    toast('Error al cargar datos: ' + (err && err.message || err), 'error');
     showLoading(false);
   }
   setRefreshSpinning(false);
@@ -961,7 +1026,7 @@ function changeWeek(delta, reset) {
   renderPendientes();
 }
 // ═══════════════════════════════════════════════════════════════
-// COMPARATIVA 2025 vs 2026
+// COMPARATIVA TEMPORADA ACTUAL vs ANTERIOR
 // ═══════════════════════════════════════════════════════════════
 let compWeekOffset = 0;
 
@@ -972,6 +1037,9 @@ function getISOWeek(date) {
   const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
   return Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
 }
+
+// Temporada Kampaoh (oct–sep) por año de inicio: 15/11/2026 → 2026, 15/05/2027 → 2026
+function seasonOf(d) { return d.getMonth() >= 9 ? d.getFullYear() : d.getFullYear() - 1; }
 
 function parseDDMMYYYY(s) {
   if (!s) return null;
@@ -997,11 +1065,11 @@ function compWeekShift(delta, reset) {
 }
 
 function renderComparativa() {
-  // Temporada 25/26: Oct-Dic 2025 + todo BBDD 2026
-  const curr = [...S.currSeasonExtra, ...S.all];
-  // Temporada 24/25: Ene-Sep 2025 (Oct-Dic 2024 no disponible en el sheet)
-  const prev = S.prevSeason;
-  if (!curr) return;
+  const curr = S.seasonCurr;
+  const prev = S.seasonPrev;
+  const yy = n => String(n).slice(-2);
+  const tCurr = `T${yy(SEASON)}/${yy(SEASON + 1)}`;
+  const tPrev = `T${yy(SEASON - 1)}/${yy(SEASON)}`;
 
   // Summary totals
   const totalCurr = curr.length;
@@ -1014,33 +1082,33 @@ function renderComparativa() {
 
   document.getElementById('comp-cards').innerHTML = `
     <div class="stat-card accent">
-      <div class="stat-label">Total Temporada 25/26</div>
+      <div class="stat-label">Total Temporada ${tCurr.slice(1)}</div>
       <div class="stat-value">${totalCurr}</div>
-      <div class="stat-sub">Oct 2025 – Sep 2026</div>
+      <div class="stat-sub">Oct ${SEASON} – Sep ${SEASON + 1}</div>
     </div>
     <div class="stat-card">
-      <div class="stat-label">Total 2025</div>
+      <div class="stat-label">Total Temporada ${tPrev.slice(1)}</div>
       <div class="stat-value">${totalPrev}</div>
-      <div class="stat-sub">Ene–Sep 2025</div>
+      <div class="stat-sub">Oct ${SEASON - 1} – Sep ${SEASON}</div>
     </div>
     <div class="stat-card ${diff >= 0 ? 'green' : 'orange'}">
       <div class="stat-label">Diferencia</div>
       <div class="stat-value">${diffSign}${diff}</div>
-      <div class="stat-sub">${diffSign}${pct}% vs 2025</div>
+      <div class="stat-sub">${diffSign}${pct}% vs ${tPrev}</div>
     </div>
     <div class="stat-card blue">
-      <div class="stat-label">Nuevos perfiles T25/26</div>
+      <div class="stat-label">Nuevos perfiles ${tCurr}</div>
       <div class="stat-value">${nuevasCurr}</div>
-      <div class="stat-sub">vs ${nuevasPrev} nuevos en 2025</div>
+      <div class="stat-sub">vs ${nuevasPrev} nuevos en ${tPrev}</div>
     </div>
   `;
 
-  // Week comparison — semana ISO en temporada actual vs misma semana temporada anterior
-  const today = new Date();
-  const curWeek = getISOWeek(today) + compWeekOffset;
-  const targetWeek = curWeek < 1 ? 1 : curWeek;
-  const w26 = getWeekStartEnd(2026, targetWeek);
-  const w25 = getWeekStartEnd(2025, targetWeek);
+  // Week comparison — semana seleccionada vs la misma semana (52 semanas antes) de la temporada anterior
+  const w26 = getWeekRange(compWeekOffset);
+  const w25 = { start: new Date(w26.start), end: new Date(w26.end) };
+  w25.start.setDate(w25.start.getDate() - 364);
+  w25.end.setDate(w25.end.getDate() - 364);
+  const targetWeek = getISOWeek(w26.start);
 
   const countCurrW = curr.filter(i => {
     const d = parseDDMMYYYY(i.fecha);
@@ -1055,23 +1123,23 @@ function renderComparativa() {
   const meses = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
   const fmtD = d => `${d.getDate()} ${meses[d.getMonth()]}`;
   document.getElementById('comp-wn-label').textContent =
-    `Semana ${targetWeek} · T25/26: ${fmtD(w26.start)}–${fmtD(w26.end)} · 2025: ${fmtD(w25.start)}–${fmtD(w25.end)}`;
+    `Semana ${targetWeek} · ${tCurr}: ${fmtD(w26.start)}–${fmtD(w26.end)} · ${tPrev}: ${fmtD(w25.start)}–${fmtD(w25.end)}`;
 
   document.getElementById('comp-week-cards').innerHTML = `
     <div class="comp-wcard">
-      <div class="cwc-label">Semana ${targetWeek} · T25/26</div>
+      <div class="cwc-label">Semana ${targetWeek} · ${tCurr}</div>
       <div class="cwc-val">${countCurrW}</div>
       <div class="cwc-sub">colaboraciones</div>
     </div>
     <div class="comp-wcard">
-      <div class="cwc-label">Semana ${targetWeek} · 2025</div>
+      <div class="cwc-label">Semana ${targetWeek} · ${tPrev}</div>
       <div class="cwc-val">${countPrevW}</div>
       <div class="cwc-sub">colaboraciones</div>
     </div>
     <div class="comp-wcard ${weekDiff > 0 ? 'pos' : weekDiff < 0 ? 'neg' : 'neutral'}">
       <div class="cwc-label">Diferencia</div>
       <div class="cwc-val">${weekSign}${weekDiff}</div>
-      <div class="cwc-sub">vs misma semana 2025</div>
+      <div class="cwc-sub">vs misma semana ${tPrev}</div>
     </div>
   `;
 
@@ -1092,8 +1160,8 @@ function renderComparativa() {
 
   document.getElementById('comp-camps').innerHTML =
     `<div class="comp-legend">
-      <span><span class="comp-leg-dot" style="background:var(--black)"></span>T25/26</span>
-      <span><span class="comp-leg-dot" style="background:var(--wgray)"></span>2025</span>
+      <span><span class="comp-leg-dot" style="background:var(--black)"></span>${tCurr}</span>
+      <span><span class="comp-leg-dot" style="background:var(--wgray)"></span>${tPrev}</span>
     </div>` +
     allCamps.slice(0, 12).map(camp => {
       const nC = cCurr[camp] || 0;
@@ -1135,8 +1203,8 @@ function renderComparativa() {
 
   document.getElementById('comp-months').innerHTML =
     `<div class="comp-legend">
-      <span><span class="comp-leg-dot" style="background:var(--black)"></span>T25/26</span>
-      <span><span class="comp-leg-dot" style="background:var(--wgray)"></span>2025</span>
+      <span><span class="comp-leg-dot" style="background:var(--black)"></span>${tCurr}</span>
+      <span><span class="comp-leg-dot" style="background:var(--wgray)"></span>${tPrev}</span>
     </div>` +
     [0,1,2,3,4,5,6,7,8,9,10,11].filter(i => (mCurr[i]||0) + (mPrev[i]||0) > 0).map(i => {
       const nC = mCurr[i] || 0;
@@ -1671,7 +1739,7 @@ function briefingHtml(i) {
   return `Buenos días, ${nombre}:<br><br>Soy Andrea, del departamento de marketing de Kampaoh. ¡Se va acercando la fecha de vuestra llegada a ${dest}! Como sabéis, tenéis una reserva para el ${fecha} en Kampaoh en nuestra ${tipo}.<br><br>Comparto contigo en ${linkEl} los aspectos a tener en cuenta acerca de nuestra colaboración. Solo tienes que hacer clic sobre los triángulos para desplegar la información. Si después de revisarlo tienes alguna duda, me dices sin problema.<br><br>Estoy a vuestra disposición para lo que necesitéis. Espero que disfrutéis mucho en Kampaoh ${dest} ⛺❤`;
 }
 
-const CC = 'marisafelices@kampaoh.com,noemirodriguez@kampaoh.com';
+const CC = 'marisafelices@kampaoh.com';
 
 function campingBodyCore(i) {
   const loc  = i?.localizador ? ` ${i.localizador}` : '';
