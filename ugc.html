@@ -571,7 +571,7 @@ tbody tr.done-row td{opacity:.55}
     <!-- STATS CARDS -->
     <div class="stats-grid" id="stats-grid">
       <div class="stat-card accent">
-        <div class="stat-label">Total completadas 2026</div>
+        <div class="stat-label">Total completadas T26/27</div>
         <div class="stat-value" id="st-total">—</div>
         <div class="stat-sub">colaboraciones</div>
       </div>
@@ -688,8 +688,11 @@ function pwCheck() {
 // ═══════════════════════════════════════════════════════════════
 // CONFIG
 // ═══════════════════════════════════════════════════════════════
+// Temporada Kampaoh (oct–sep) en curso, por año de inicio: 2026 → T26/27 (pestaña UGC 2027)
+const SEASON     = 2026;
+const UGC_TAB    = 'UGC 2027';
 const SHEET_ID   = '1fosSDey9UD7HTcNW02wLIPfFtkqkjrooQlR6Oge48cs';
-const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbzhDxp4hxXgXXPg31JFGHF9UZ2RoyBLibdDMqtaxdZ_DOU7kyuCGHpnmftXoMeMccobOg/exec';
+const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbzz5pk8-5MHJXdVyM7-xAHJuUQ7nbOynGIAd4eDDkDmjTSFGWpqxfEgg2HsdLa18_iivQ/exec';
 
 // ═══════════════════════════════════════════════════════════════
 // STATE
@@ -782,7 +785,7 @@ async function loadData() {
 
   try {
     const [tUGC, tCamp] = await Promise.all([
-      fetchSheet('UGC'),
+      fetchSheet(UGC_TAB),
       fetchSheet('Campings'),
     ]);
 
@@ -797,7 +800,7 @@ async function loadData() {
     });
     S.campings = campings;
 
-    // Parse influencers from UGC sheet
+    // Parse influencers from UGC_TAB sheet
     // Column mapping:
     //   A (0): username
     //   B (1): nombre
@@ -816,8 +819,12 @@ async function loadData() {
         const u = cleanStr(r[0]);
         if (!u) return;
         const fecha = parseFecha(r[4]); // col E
-        const year = fecha ? fecha.split('/')[2] : null;
-        if (year && year !== '2026') return;
+        // Solo la temporada en curso, oct SEASON – sep SEASON+1 (las filas sin fecha se mantienen)
+        const fp = (fecha || '').split('/').map(Number);
+        if (fp.length === 3 && fp[2]) {
+          const season = fp[1] >= 10 ? fp[2] : fp[2] - 1;
+          if (season !== SEASON) return;
+        }
         const uSlug = u.replace(/[^a-z0-9]/gi, '').toLowerCase();
         const fSlug = (fecha || '').replace(/\//g, '');
         const id = `U_${uSlug}_${fSlug}`;
@@ -842,7 +849,7 @@ async function loadData() {
         });
       });
     };
-    parseRows(tableToRows(tUGC), 'UGC');
+    parseRows(tableToRows(tUGC), UGC_TAB);
 
     // Enrich
     S.all = influencers.map(r => enrich(r));
@@ -856,7 +863,7 @@ async function loadData() {
   } catch(err) {
     console.error(err);
     setConn('error', 'Error de conexión');
-    toast('Error al cargar datos. Verifica que el documento es público.', 'error');
+    toast('Error al cargar datos: ' + (err && err.message || err), 'error');
     showLoading(false);
   }
   setRefreshSpinning(false);
@@ -1397,6 +1404,7 @@ function callStatusAPI(id, key, value) {
   if (!item) return;
   const url = WEB_APP_URL
     + '?action=status'
+    + '&sheet='    + encodeURIComponent(item.fuente)
     + '&username=' + encodeURIComponent(item.username)
     + '&fecha='    + encodeURIComponent(item.fecha || '')
     + '&field='    + encodeURIComponent(key)
